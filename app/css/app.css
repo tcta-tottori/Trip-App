@@ -314,6 +314,7 @@ h1, h2, h3 { font-family: 'Shippori Mincho', serif; letter-spacing: 0.02em; }
   border-radius: 4px;
 }
 .attr-card .badge.must { background: var(--gold); border-color: var(--gold); color: white; }
+.attr-card .badge.over { background: var(--rouge); border-color: var(--rouge); color: white; }
 .attr-card .badge.fav { background: var(--rouge); border-color: var(--rouge); color: white; }
 .attr-card .badge.exp { background: var(--mint); border-color: var(--mint); color: white; }
 .attr-card.closed { opacity: 0.5; }

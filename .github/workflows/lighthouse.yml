@@ -1,0 +1,47 @@
+name: Lighthouse audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/new-session-BlJ72]
+    paths:
+      - "app/**"
+      - "data/**"
+      - ".github/workflows/lighthouse.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Serve site in background
+        run: |
+          python3 -m http.server 8080 >/tmp/server.log 2>&1 &
+          echo $! > /tmp/server.pid
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:8080/app/ -o /dev/null; then break; fi
+            sleep 0.5
+          done
+          curl -fsS http://127.0.0.1:8080/app/ -o /dev/null || (cat /tmp/server.log; exit 1)
+
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://127.0.0.1:8080/app/
+          uploadArtifacts: true
+          temporaryPublicStorage: false
+          configPath: ./.github/lighthouse/lighthouserc.json
+
+      - name: Stop server
+        if: always()
+        run: kill "$(cat /tmp/server.pid)" 2>/dev/null || true

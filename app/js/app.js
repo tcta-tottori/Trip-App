@@ -308,22 +308,26 @@ const App = (() => {
       b.onclick = () => { currentParkTab = b.dataset.park; renderAttractions(); };
     });
 
-    ['f-safe', 'f-fav', 'f-unrid', 'f-open'].forEach(id => {
+    ['f-safe', 'f-height', 'f-fav', 'f-unrid', 'f-open'].forEach(id => {
       const el = document.getElementById(id);
       el.onchange = () => renderAttractions();
     });
 
-    const safeOnly = document.getElementById('f-safe').checked;
-    const favOnly  = document.getElementById('f-fav').checked;
-    const unridden = document.getElementById('f-unrid').checked;
-    const openOnly = document.getElementById('f-open').checked;
-    const kidMode  = !!Storage.get('settings', {}).kidMode;
+    const safeOnly  = document.getElementById('f-safe').checked;
+    const heightOk  = document.getElementById('f-height').checked;
+    const favOnly   = document.getElementById('f-fav').checked;
+    const unridden  = document.getElementById('f-unrid').checked;
+    const openOnly  = document.getElementById('f-open').checked;
+    const settings  = Storage.get('settings', {});
+    const kidMode   = !!settings.kidMode;
+    const childHeight = Number.isFinite(settings.childHeight) ? settings.childHeight : 102;
     const favs = new Set(Storage.get('favorites', []));
     const exp  = new Set(Storage.get('experienced', []));
 
     const parkList = DataStore.attractions().filter(a => a.park === currentParkTab);
     let list = parkList;
     if (kidMode)  list = list.filter(a => a.fearLevel < 4);
+    if (heightOk) list = list.filter(a => !a.heightLimit || a.heightLimit <= childHeight);
     if (safeOnly) list = list.filter(a => a.fearLevel <= 2);
     if (favOnly)  list = list.filter(a => favs.has(a.id));
     if (unridden) list = list.filter(a => !exp.has(a.id));
@@ -342,7 +346,7 @@ const App = (() => {
       root.innerHTML = banner + '<div class="empty">該当するアトラクションがありません</div>';
     } else {
       root.innerHTML = banner + `<div class="attr-grid">
-        ${list.map(a => attractionCardHtml(a, favs.has(a.id), exp.has(a.id))).join('')}
+        ${list.map(a => attractionCardHtml(a, favs.has(a.id), exp.has(a.id), childHeight)).join('')}
       </div>`;
       root.querySelectorAll('.attr-card').forEach(el => {
         el.addEventListener('click', () => showAttractionDetail(el.dataset.id));
@@ -360,9 +364,10 @@ const App = (() => {
     }
   }
 
-  function attractionCardHtml(a, isFav, isExp) {
+  function attractionCardHtml(a, isFav, isExp, childHeight) {
     const dots = [1,2,3,4,5].map(n => `<span class="dot ${n <= a.fearLevel ? 'on' : ''}"></span>`).join('');
     const emoji = parkEmoji(a);
+    const overHeight = a.heightLimit && childHeight && a.heightLimit > childHeight;
     return `
       <div class="attr-card l${a.fearLevel} ${a.closed ? 'closed' : ''}" data-id="${a.id}">
         <div class="thumb">
@@ -376,7 +381,7 @@ const App = (() => {
             ${a.mustRide ? '<span class="badge must">必乗</span>' : ''}
             ${isFav ? '<span class="badge fav">⭐</span>' : ''}
             ${isExp ? '<span class="badge exp">✓</span>' : ''}
-            ${a.heightLimit ? `<span class="badge">${a.heightLimit}cm〜</span>` : ''}
+            ${a.heightLimit ? `<span class="badge ${overHeight ? 'over' : ''}">${a.heightLimit}cm〜</span>` : ''}
           </div>
         </div>
       </div>`;
@@ -800,7 +805,8 @@ const App = (() => {
   // ---------- Settings ----------
   function renderSettings() {
     const root = document.getElementById('settings-content');
-    const s = Storage.get('settings', { dark: false, kidMode: false });
+    const s = Storage.get('settings', { dark: false, kidMode: false, childHeight: 102 });
+    if (typeof s.childHeight !== 'number') s.childHeight = 102;
     const n = Notify.settings();
     const permLabel = !Notify.isSupported() ? '非対応'
       : Notification.permission === 'granted' ? '許可済'
@@ -816,6 +822,11 @@ const App = (() => {
         <div class="setting-row">
           <div><div class="label">👶 子ども配慮モード</div><div class="desc">怖さLv4以上を初期で非表示</div></div>
           <label class="switch"><input type="checkbox" id="s-kid" ${s.kidMode ? 'checked' : ''}><span class="slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div><div class="label">📏 子どもの身長</div><div class="desc">「身長OKのみ」フィルタの基準値（cm）</div></div>
+          <input type="number" id="s-height" min="60" max="200" step="1" value="${s.childHeight}"
+                 style="width:80px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-family:inherit;font-size:14px;text-align:right;">
         </div>
       </div>
 
@@ -870,6 +881,16 @@ const App = (() => {
       const settings = Storage.get('settings', {}); settings.kidMode = e.target.checked;
       Storage.set('settings', settings);
       toast(e.target.checked ? '子ども配慮モード ON' : '子ども配慮モード OFF');
+      const attrScreen = document.getElementById('screen-attractions');
+      if (attrScreen && !attrScreen.hidden) renderAttractions();
+    };
+    document.getElementById('s-height').onchange = e => {
+      const v = parseInt(e.target.value, 10);
+      const settings = Storage.get('settings', {});
+      settings.childHeight = (Number.isFinite(v) && v >= 60 && v <= 200) ? v : 102;
+      e.target.value = settings.childHeight;
+      Storage.set('settings', settings);
+      toast(`基準身長を ${settings.childHeight}cm に設定`);
       const attrScreen = document.getElementById('screen-attractions');
       if (attrScreen && !attrScreen.hidden) renderAttractions();
     };
