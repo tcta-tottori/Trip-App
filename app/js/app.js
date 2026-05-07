@@ -567,27 +567,95 @@ const App = (() => {
   }
 
   // ---------- Memos ----------
+  const MEMO_CATEGORIES = [
+    { key: 'memory',   label: '思い出',   emoji: '💭' },
+    { key: 'food',     label: '食事',     emoji: '🍴' },
+    { key: 'souvenir', label: 'お土産',   emoji: '🛍️' },
+    { key: 'tip',      label: 'Tips',     emoji: '💡' },
+    { key: 'other',    label: 'その他',   emoji: '📝' },
+  ];
+  const MEMO_FILTER_KEY = 'memoFilter';
+
+  function memoCategory(key) {
+    return MEMO_CATEGORIES.find(c => c.key === key) || MEMO_CATEGORIES[0];
+  }
+
+  function memoDayLabel(dateStr) {
+    if (!dateStr) return '日付未指定';
+    const day = DataStore.itinerary().days.find(d => d.date === dateStr);
+    return day ? `Day ${day.dayNumber}・${formatDateJa(day.date)}` : formatDateJa(dateStr);
+  }
+
   function renderMemos() {
     const root = document.getElementById('memos-content');
     const memos = Storage.get('memos', []);
-    root.innerHTML = `
-      <button class="btn" id="add-memo" style="margin-bottom:14px;">+ メモを追加</button>
-      ${memos.length ? memos.slice().reverse().map(m => `
-        <div class="memo-card" data-id="${m.id}">
-          ${m.targetName ? `<div class="target">🎢 ${escape(m.targetName)}</div>` : ''}
-          <div class="head">
-            <strong>${escape(m.title || 'メモ')}</strong>
-            <time>${formatTimestamp(m.created)}</time>
-          </div>
-          <div class="body">${escape(m.body || '')}</div>
-          <div class="modal-actions" style="margin-top:8px;">
-            <button class="btn small outline" data-edit="${m.id}">編集</button>
-            <button class="btn small danger" data-del="${m.id}">削除</button>
-          </div>
+    const filter = Storage.get(MEMO_FILTER_KEY, { q: '', cat: 'all' });
+
+    const filtered = memos.filter(m => {
+      if (filter.cat && filter.cat !== 'all' && (m.category || 'memory') !== filter.cat) return false;
+      if (filter.q) {
+        const hay = [m.title, m.body, m.targetName].filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(filter.q.toLowerCase())) return false;
+      }
+      return true;
+    });
+
+    const tripDates = DataStore.itinerary().days.map(d => d.date);
+    const groups = new Map();
+    tripDates.forEach(d => groups.set(d, []));
+    groups.set('', []);
+    filtered.forEach(m => {
+      const key = tripDates.includes(m.day) ? m.day : '';
+      groups.get(key).push(m);
+    });
+    groups.forEach(arr => arr.sort((a, b) => (b.created || 0) - (a.created || 0)));
+
+    const catChips = ['all', ...MEMO_CATEGORIES.map(c => c.key)].map(k => {
+      const label = k === 'all' ? 'すべて' : `${memoCategory(k).emoji} ${memoCategory(k).label}`;
+      const active = (filter.cat || 'all') === k;
+      return `<button type="button" class="chip cat-chip ${active ? 'active' : ''}" data-cat="${k}">${label}</button>`;
+    }).join('');
+
+    const sections = [...groups.entries()]
+      .filter(([, arr]) => arr.length)
+      .map(([dateKey, arr]) => `
+        <div class="memo-section">
+          <h3 class="memo-day-header">${escape(memoDayLabel(dateKey))}　<span class="muted">(${arr.length})</span></h3>
+          ${arr.map(memoCardHtml).join('')}
         </div>
-      `).join('') : '<div class="empty">まだメモがありません</div>'}
+      `).join('');
+
+    const emptyMsg = memos.length
+      ? '<div class="empty">条件に一致するメモがありません</div>'
+      : '<div class="empty">まだメモがありません<br><small>アトラクション詳細の「📝 メモ」からも追加できます</small></div>';
+
+    root.innerHTML = `
+      <div class="memo-toolbar">
+        <button class="btn" id="add-memo">+ メモを追加</button>
+        <button class="btn small outline" id="export-memo" ${memos.length ? '' : 'disabled'}>⬇ エクスポート</button>
+      </div>
+      <input type="search" id="memo-search" class="memo-search" placeholder="🔍 タイトル・本文・対象を検索"
+             value="${escape(filter.q || '')}">
+      <div class="memo-cats">${catChips}</div>
+      ${sections || emptyMsg}
     `;
+
     document.getElementById('add-memo').onclick = () => openMemoEditor({});
+    document.getElementById('export-memo').onclick = () => exportMemosMarkdown();
+    const searchEl = document.getElementById('memo-search');
+    searchEl.addEventListener('input', () => {
+      const next = { ...filter, q: searchEl.value };
+      Storage.set(MEMO_FILTER_KEY, next);
+      renderMemos();
+      const again = document.getElementById('memo-search');
+      if (again) { again.focus(); again.setSelectionRange(again.value.length, again.value.length); }
+    });
+    root.querySelectorAll('.cat-chip').forEach(b => {
+      b.onclick = () => {
+        Storage.set(MEMO_FILTER_KEY, { ...filter, cat: b.dataset.cat });
+        renderMemos();
+      };
+    });
     root.querySelectorAll('[data-edit]').forEach(b => {
       b.onclick = () => {
         const m = Storage.get('memos', []).find(x => x.id === b.dataset.edit);
@@ -604,13 +672,56 @@ const App = (() => {
     });
   }
 
+  function memoCardHtml(m) {
+    const cat = memoCategory(m.category || 'memory');
+    const photo = m.photoUrl
+      ? `<a class="memo-photo" href="${escape(m.photoUrl)}" target="_blank" rel="noopener">
+           <img src="${escape(m.photoUrl)}" alt="" loading="lazy" onerror="this.parentElement.classList.add('broken')">
+           <span class="memo-photo-fallback">🖼️ 写真を開く</span>
+         </a>`
+      : '';
+    return `
+      <div class="memo-card cat-${cat.key}" data-id="${m.id}">
+        <div class="head">
+          <span class="cat-badge cat-${cat.key}">${cat.emoji} ${cat.label}</span>
+          <time>${formatTimestamp(m.created)}${m.updated ? ' (編集済)' : ''}</time>
+        </div>
+        ${m.targetName ? `<div class="target">🎢 ${escape(m.targetName)}</div>` : ''}
+        ${m.title ? `<strong class="memo-title">${escape(m.title)}</strong>` : ''}
+        ${photo}
+        ${m.body ? `<div class="body">${escape(m.body)}</div>` : ''}
+        <div class="modal-actions" style="margin-top:8px;">
+          <button class="btn small outline" data-edit="${m.id}">編集</button>
+          <button class="btn small danger" data-del="${m.id}">削除</button>
+        </div>
+      </div>`;
+  }
+
   function openMemoEditor(seed) {
     const isEdit = !!seed.id;
+    const days = DataStore.itinerary().days;
+    const dayOptions = ['<option value="">日付未指定</option>']
+      .concat(days.map(d => `<option value="${d.date}" ${seed.day === d.date ? 'selected' : ''}>Day ${d.dayNumber}・${formatDateJa(d.date)}</option>`))
+      .join('');
+    const catOptions = MEMO_CATEGORIES.map(c =>
+      `<option value="${c.key}" ${(seed.category || 'memory') === c.key ? 'selected' : ''}>${c.emoji} ${c.label}</option>`
+    ).join('');
+
     openModal(`
       <h2>${isEdit ? 'メモを編集' : 'メモを追加'}</h2>
       ${seed.targetName ? `<div class="target" style="color:var(--gold);font-size:13px;margin-bottom:8px;">🎢 ${escape(seed.targetName)}</div>` : ''}
+      <div class="memo-form-row">
+        <label>カテゴリ
+          <select id="m-cat">${catOptions}</select>
+        </label>
+        <label>日付
+          <select id="m-day">${dayOptions}</select>
+        </label>
+      </div>
       <input type="text" id="m-title" placeholder="タイトル" value="${escape(seed.title || '')}"
              style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--card);color:var(--ink);font-family:inherit;font-size:14px;">
+      <input type="url" id="m-photo" placeholder="写真URL（Google Photos の共有リンクなど）" value="${escape(seed.photoUrl || '')}"
+             style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--card);color:var(--ink);font-family:inherit;font-size:13px;">
       <textarea class="memo-input" id="m-body" placeholder="思い出を書く...">${escape(seed.body || '')}</textarea>
       <div class="modal-actions">
         <button class="btn" id="m-save">保存</button>
@@ -620,14 +731,21 @@ const App = (() => {
     document.getElementById('m-save').onclick = () => {
       const title = document.getElementById('m-title').value.trim();
       const body  = document.getElementById('m-body').value.trim();
-      if (!title && !body) { toast('内容を入力してください'); return; }
+      const category = document.getElementById('m-cat').value || 'memory';
+      const day = document.getElementById('m-day').value || null;
+      const photoUrl = document.getElementById('m-photo').value.trim() || null;
+      if (!title && !body && !photoUrl) { toast('内容を入力してください'); return; }
       const memos = Storage.get('memos', []);
       if (isEdit) {
         const m = memos.find(x => x.id === seed.id);
-        if (m) { m.title = title; m.body = body; m.updated = Date.now(); }
+        if (m) {
+          m.title = title; m.body = body; m.category = category;
+          m.day = day; m.photoUrl = photoUrl; m.updated = Date.now();
+        }
       } else {
         memos.push({
-          id: 'm' + Date.now(), title, body,
+          id: 'm' + Date.now(), title, body, category,
+          day, photoUrl,
           targetId: seed.targetId || null, targetName: seed.targetName || null,
           created: Date.now()
         });
@@ -637,6 +755,46 @@ const App = (() => {
       go('memos');
       toast('保存しました');
     };
+  }
+
+  function exportMemosMarkdown() {
+    const memos = Storage.get('memos', []);
+    if (!memos.length) { toast('メモがありません'); return; }
+    const trip = DataStore.itinerary().trip || {};
+    const tripDates = DataStore.itinerary().days.map(d => d.date);
+    const groups = new Map();
+    tripDates.forEach(d => groups.set(d, []));
+    groups.set('', []);
+    memos.forEach(m => {
+      const k = tripDates.includes(m.day) ? m.day : '';
+      groups.get(k).push(m);
+    });
+    groups.forEach(arr => arr.sort((a, b) => (a.created || 0) - (b.created || 0)));
+
+    const lines = [`# ${trip.title || 'メモ'}`, ''];
+    [...groups.entries()].forEach(([dateKey, arr]) => {
+      if (!arr.length) return;
+      lines.push(`## ${memoDayLabel(dateKey)}`, '');
+      arr.forEach(m => {
+        const cat = memoCategory(m.category || 'memory');
+        const heading = m.title || cat.label;
+        lines.push(`### ${cat.emoji} ${heading}`);
+        if (m.targetName) lines.push(`- 対象: 🎢 ${m.targetName}`);
+        lines.push(`- 記録: ${formatTimestamp(m.created)}${m.updated ? ' (編集: ' + formatTimestamp(m.updated) + ')' : ''}`);
+        if (m.photoUrl) lines.push(`- 写真: ${m.photoUrl}`);
+        if (m.body) { lines.push('', m.body); }
+        lines.push('');
+      });
+    });
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0, 10);
+    a.href = url; a.download = `trip-memos-${stamp}.md`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast('エクスポートしました');
   }
 
   // ---------- Settings ----------
