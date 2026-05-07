@@ -317,27 +317,47 @@ const App = (() => {
     const favOnly  = document.getElementById('f-fav').checked;
     const unridden = document.getElementById('f-unrid').checked;
     const openOnly = document.getElementById('f-open').checked;
+    const kidMode  = !!Storage.get('settings', {}).kidMode;
     const favs = new Set(Storage.get('favorites', []));
     const exp  = new Set(Storage.get('experienced', []));
 
-    let list = DataStore.attractions().filter(a => a.park === currentParkTab);
+    const parkList = DataStore.attractions().filter(a => a.park === currentParkTab);
+    let list = parkList;
+    if (kidMode)  list = list.filter(a => a.fearLevel < 4);
     if (safeOnly) list = list.filter(a => a.fearLevel <= 2);
     if (favOnly)  list = list.filter(a => favs.has(a.id));
     if (unridden) list = list.filter(a => !exp.has(a.id));
     if (openOnly) list = list.filter(a => !a.closed);
     list.sort((a, b) => (b.mustRide - a.mustRide) || (a.fearLevel - b.fearLevel));
 
+    const hiddenByKid = kidMode ? parkList.filter(a => a.fearLevel >= 4).length : 0;
+    const banner = kidMode ? `
+      <div class="kid-banner" role="status">
+        <span>👶 子ども配慮モード ON：怖さ Lv4 以上を ${hiddenByKid} 件 非表示中</span>
+        <button type="button" class="link" id="kid-disable">解除</button>
+      </div>` : '';
+
     const root = document.getElementById('attractions-content');
     if (!list.length) {
-      root.innerHTML = '<div class="empty">該当するアトラクションがありません</div>';
-      return;
+      root.innerHTML = banner + '<div class="empty">該当するアトラクションがありません</div>';
+    } else {
+      root.innerHTML = banner + `<div class="attr-grid">
+        ${list.map(a => attractionCardHtml(a, favs.has(a.id), exp.has(a.id))).join('')}
+      </div>`;
+      root.querySelectorAll('.attr-card').forEach(el => {
+        el.addEventListener('click', () => showAttractionDetail(el.dataset.id));
+      });
     }
-    root.innerHTML = `<div class="attr-grid">
-      ${list.map(a => attractionCardHtml(a, favs.has(a.id), exp.has(a.id))).join('')}
-    </div>`;
-    root.querySelectorAll('.attr-card').forEach(el => {
-      el.addEventListener('click', () => showAttractionDetail(el.dataset.id));
-    });
+    const disableBtn = document.getElementById('kid-disable');
+    if (disableBtn) {
+      disableBtn.addEventListener('click', () => {
+        const settings = Storage.get('settings', {});
+        settings.kidMode = false;
+        Storage.set('settings', settings);
+        toast('子ども配慮モードを解除しました');
+        renderAttractions();
+      });
+    }
   }
 
   function attractionCardHtml(a, isFav, isExp) {
@@ -691,6 +711,9 @@ const App = (() => {
     document.getElementById('s-kid').onchange = e => {
       const settings = Storage.get('settings', {}); settings.kidMode = e.target.checked;
       Storage.set('settings', settings);
+      toast(e.target.checked ? '子ども配慮モード ON' : '子ども配慮モード OFF');
+      const attrScreen = document.getElementById('screen-attractions');
+      if (attrScreen && !attrScreen.hidden) renderAttractions();
     };
     const saveNotify = () => {
       const cur = Notify.settings();

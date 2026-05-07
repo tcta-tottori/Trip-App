@@ -261,6 +261,22 @@ h1, h2, h3 { font-family: 'Shippori Mincho', serif; letter-spacing: 0.02em; }
 }
 .chip input { margin: 0; }
 
+.kid-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin: 0 0 10px;
+  padding: 10px 12px;
+  background: #fff7e6; border: 1px solid #f0d28a; border-radius: 8px;
+  color: #6e4f12; font-size: 13px;
+}
+.kid-banner .link {
+  background: transparent; border: 0; padding: 4px 8px;
+  color: var(--rouge); font-family: inherit; font-size: 13px;
+  font-weight: 700; cursor: pointer; text-decoration: underline;
+}
+[data-theme="dark"] .kid-banner {
+  background: #3a2f1a; border-color: #6e5424; color: #f3d99a;
+}
+
 .attr-grid {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
 }
