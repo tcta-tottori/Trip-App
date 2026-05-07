@@ -148,6 +148,7 @@ const App = (() => {
 
     root.innerHTML = `
       ${heroHtml}
+      <div id="weather-slot"></div>
       ${nextHtml}
       <div class="quick-grid">
         <button class="quick-tile" data-go-tile="map"><span>🗺️</span>地図</button>
@@ -162,7 +163,48 @@ const App = (() => {
       b.addEventListener('click', () => go(b.dataset.goTile));
     });
 
+    loadWeather();
     if (!inTrip) startCountdown();
+  }
+
+  async function loadWeather() {
+    const slot = document.getElementById('weather-slot');
+    if (!slot) return;
+    slot.innerHTML = '<div class="weather-card loading">☁️ 天気を取得中...</div>';
+    const parsed = await Weather.fetchForecast();
+    if (!parsed || !parsed.days || !parsed.days.length) {
+      slot.innerHTML = '<div class="weather-card error">天気情報を取得できませんでした</div>';
+      return;
+    }
+    const trip = DataStore.itinerary().days.map(d => d.date);
+    // 旅行期間中なら旅行3日分を、期間外なら直近3日を表示
+    const days = parsed.days.filter(d => trip.includes(d.date));
+    const list = (days.length ? days : parsed.days).slice(0, 3);
+    slot.innerHTML = `
+      <div class="weather-card">
+        <div class="wx-head">
+          <span class="wx-area">📍 ${escape(parsed.area)}</span>
+          <span class="wx-meta">${parsed.publishingOffice ? escape(parsed.publishingOffice) : ''}</span>
+        </div>
+        <div class="wx-grid">
+          ${list.map(d => `
+            <div class="wx-day">
+              <div class="wx-date">${formatDateShort(d.date)}</div>
+              <div class="wx-icon">${d.icon}</div>
+              <div class="wx-text">${escape(d.weather || '-')}</div>
+              <div class="wx-pop">${d.popMax != null ? '☔ ' + d.popMax + '%' : ''}</div>
+              <div class="wx-temp">${d.tempMax != null ? d.tempMax + '°' : ''}${d.tempMin != null ? ' / ' + d.tempMin + '°' : ''}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function formatDateShort(s) {
+    const [, m, d] = s.split('-');
+    const w = ['日','月','火','水','木','金','土'][new Date(s + 'T00:00:00+09:00').getDay()];
+    return `${+m}/${+d}（${w}）`;
   }
 
   function startCountdown() {

@@ -1,5 +1,5 @@
 // Service Worker for offline support
-const CACHE_NAME = 'disney2026-v2';
+const CACHE_NAME = 'disney2026-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const ASSETS = [
   './js/checklist.js',
   './js/map.js',
   './js/notify.js',
+  './js/weather.js',
   '../data/attractions.json',
   '../data/itinerary.json',
   '../data/checklist.json',
