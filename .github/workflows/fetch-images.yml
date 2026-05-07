@@ -1,0 +1,44 @@
+name: Fetch attraction images
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Commit images to this branch"
+        required: false
+        default: "claude/new-session-BlJ72"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pillow
+        run: pip install --quiet Pillow
+
+      - name: Fetch images
+        run: python3 scripts/fetch_images.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/
+          if git diff --staged --quiet; then
+            echo "No image changes."
+            exit 0
+          fi
+          git commit -m "Refresh attraction images via fetch_images.py"
+          git push origin HEAD:${{ github.event.inputs.branch }}
