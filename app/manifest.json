@@ -1,0 +1,20 @@
+{
+  "name": "ディズニー旅行 2026",
+  "short_name": "Disney2026",
+  "description": "東京ディズニーリゾート2泊3日旅行プランナー",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf8f3",
+  "theme_color": "#1e3a5f",
+  "lang": "ja",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "今日の予定", "url": "./index.html#home" },
+    { "name": "地図", "url": "./index.html#map" },
+    { "name": "持ち物", "url": "./index.html#checklist" }
+  ]
+}

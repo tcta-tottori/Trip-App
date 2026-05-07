@@ -1,0 +1,37 @@
+{
+  "items": [
+    { "id": "u1", "category": "urgent", "text": "株主優待パスポート予約確認", "deadline": "pre-trip" },
+    { "id": "u2", "category": "urgent", "text": "ANA座席指定（家族隣席）", "deadline": "pre-trip" },
+    { "id": "u3", "category": "urgent", "text": "ホテル予約確認メール", "deadline": "pre-trip" },
+    { "id": "u4", "category": "urgent", "text": "天気予報チェック", "deadline": "day1" },
+    { "id": "u5", "category": "urgent", "text": "出発前日 子どもを早めに就寝", "deadline": "pre-trip" },
+
+    { "id": "t1", "category": "travel", "text": "航空券（QRコード or 紙）", "deadline": "day1" },
+    { "id": "t2", "category": "travel", "text": "本人確認書類", "deadline": "day1" },
+    { "id": "t3", "category": "travel", "text": "現金", "deadline": "day1" },
+    { "id": "t4", "category": "travel", "text": "クレジットカード", "deadline": "day1" },
+    { "id": "t5", "category": "travel", "text": "ICカード（Suica/PASMO）", "deadline": "day1" },
+
+    { "id": "p1", "category": "pack", "text": "充電器（モバイルバッテリー含む）", "deadline": "day1" },
+    { "id": "p2", "category": "pack", "text": "充電ケーブル（複数）", "deadline": "day1" },
+    { "id": "p3", "category": "pack", "text": "歯ブラシセット", "deadline": "day1" },
+    { "id": "p4", "category": "pack", "text": "着替え（3日分）", "deadline": "day1" },
+    { "id": "p5", "category": "pack", "text": "下着・靴下", "deadline": "day1" },
+    { "id": "p6", "category": "pack", "text": "薬（普段の常備薬）", "deadline": "day1" },
+    { "id": "p7", "category": "pack", "text": "化粧品・コンタクト", "deadline": "day1" },
+
+    { "id": "k1", "category": "kids", "text": "子どもの着替え（多めに）", "deadline": "day1" },
+    { "id": "k2", "category": "kids", "text": "おむつ（念のため）", "deadline": "day1" },
+    { "id": "k3", "category": "kids", "text": "おしりふき", "deadline": "day1" },
+    { "id": "k4", "category": "kids", "text": "抱っこ紐", "deadline": "day1" },
+    { "id": "k5", "category": "kids", "text": "子ども用おやつ", "deadline": "day1" },
+    { "id": "k6", "category": "kids", "text": "迷子対策（連絡先カード）", "deadline": "day1" },
+    { "id": "k7", "category": "kids", "text": "お気に入りのおもちゃ", "deadline": "day1" },
+    { "id": "k8", "category": "kids", "text": "子ども用解熱剤", "deadline": "day1" },
+
+    { "id": "r1", "category": "pack-rain", "text": "レインコート（家族分）", "deadline": "day1" },
+    { "id": "r2", "category": "pack-rain", "text": "折りたたみ傘", "deadline": "day1" },
+    { "id": "r3", "category": "pack-rain", "text": "タオル（複数）", "deadline": "day1" },
+    { "id": "r4", "category": "pack-rain", "text": "替えの靴下", "deadline": "day1" }
+  ]
+}

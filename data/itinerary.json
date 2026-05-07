@@ -1,0 +1,228 @@
+{
+  "trip": {
+    "title": "ディズニー旅行 2026",
+    "startDate": "2026-06-06",
+    "endDate": "2026-06-08",
+    "members": "山本一家（夫婦 + 4歳児・身長102cm）"
+  },
+  "days": [
+    {
+      "date": "2026-06-06",
+      "dayNumber": 1,
+      "title": "移動 ＆ ディズニーランド",
+      "park": "land",
+      "events": [
+        {
+          "time": "05:30",
+          "title": "鳥取コナン空港に到着",
+          "type": "transit",
+          "location": "鳥取コナン空港",
+          "description": "搭乗手続き・荷物預け"
+        },
+        {
+          "time": "07:05",
+          "title": "ANA292便 出発",
+          "type": "flight",
+          "location": "鳥取コナン空港",
+          "description": "羽田行き"
+        },
+        {
+          "time": "08:15",
+          "title": "羽田空港 到着",
+          "type": "flight",
+          "location": "羽田空港"
+        },
+        {
+          "time": "09:00",
+          "title": "羽田 → 舞浜（電車・約45分）",
+          "type": "transit",
+          "description": "京急→JR京葉線で舞浜駅"
+        },
+        {
+          "time": "10:00",
+          "title": "ディズニーランド 入園",
+          "type": "park",
+          "location": "東京ディズニーランド",
+          "highlight": true,
+          "description": "株主優待パスポート"
+        },
+        {
+          "time": "10:30",
+          "title": "プーさんのハニーハント",
+          "type": "park",
+          "description": "朝イチで人気アトラクション"
+        },
+        {
+          "time": "11:30",
+          "title": "ランチ（クイーン・オブ・ハートのバンケットホール）",
+          "type": "meal"
+        },
+        {
+          "time": "13:00",
+          "title": "美女と野獣 \"魔法のものがたり\"",
+          "type": "park"
+        },
+        {
+          "time": "14:30",
+          "title": "イッツ・ア・スモールワールド",
+          "type": "park",
+          "highlight": true
+        },
+        {
+          "time": "15:30",
+          "title": "おやつ休憩",
+          "type": "meal",
+          "description": "ヴァネロペ期間限定スイーツ"
+        },
+        {
+          "time": "16:30",
+          "title": "ジャングルクルーズ",
+          "type": "park"
+        },
+        {
+          "time": "18:00",
+          "title": "ディナー",
+          "type": "meal"
+        },
+        {
+          "time": "19:30",
+          "title": "退園",
+          "type": "park"
+        },
+        {
+          "time": "20:00",
+          "title": "浦安ブライトンホテル チェックイン",
+          "type": "hotel",
+          "location": "浦安ブライトンホテル東京ベイ",
+          "description": "Room MIZUKAGAMI"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-07",
+      "dayNumber": 2,
+      "title": "ディズニーシー",
+      "park": "sea",
+      "events": [
+        {
+          "time": "07:30",
+          "title": "朝食（ホテル）",
+          "type": "meal"
+        },
+        {
+          "time": "09:00",
+          "title": "ホテルチェックアウト・荷物預け",
+          "type": "hotel"
+        },
+        {
+          "time": "10:00",
+          "title": "ディズニーシー 入園",
+          "type": "park",
+          "location": "東京ディズニーシー",
+          "highlight": true
+        },
+        {
+          "time": "10:30",
+          "title": "マーメイドラグーン",
+          "type": "park",
+          "highlight": true,
+          "description": "屋内エリアでまったり"
+        },
+        {
+          "time": "12:00",
+          "title": "ランチ（カスバ・フードコート）",
+          "type": "meal"
+        },
+        {
+          "time": "13:30",
+          "title": "シンドバッド・ストーリーブック・ヴォヤッジ",
+          "type": "park"
+        },
+        {
+          "time": "14:30",
+          "title": "ジャスミンのフライングカーペット",
+          "type": "park"
+        },
+        {
+          "time": "15:30",
+          "title": "おやつ休憩",
+          "type": "meal"
+        },
+        {
+          "time": "16:30",
+          "title": "ヴェネツィアン・ゴンドラ",
+          "type": "park"
+        },
+        {
+          "time": "18:00",
+          "title": "ディナー",
+          "type": "meal"
+        },
+        {
+          "time": "19:30",
+          "title": "ハーバーショー鑑賞（25周年）",
+          "type": "park",
+          "highlight": true,
+          "description": "Sparkling Jubilee"
+        },
+        {
+          "time": "20:30",
+          "title": "退園",
+          "type": "park"
+        },
+        {
+          "time": "21:00",
+          "title": "舞浜ユーラシア チェックイン",
+          "type": "hotel",
+          "location": "SPA&HOTEL 舞浜ユーラシア",
+          "description": "オーシャンビュー和室"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-08",
+      "dayNumber": 3,
+      "title": "復路",
+      "events": [
+        {
+          "time": "08:00",
+          "title": "朝食（ホテル）",
+          "type": "meal"
+        },
+        {
+          "time": "10:00",
+          "title": "ホテルチェックアウト",
+          "type": "hotel"
+        },
+        {
+          "time": "11:00",
+          "title": "イクスピアリでお土産",
+          "type": "shopping",
+          "location": "イクスピアリ"
+        },
+        {
+          "time": "13:00",
+          "title": "ランチ",
+          "type": "meal"
+        },
+        {
+          "time": "14:30",
+          "title": "舞浜 → 羽田空港",
+          "type": "transit"
+        },
+        {
+          "time": "16:30",
+          "title": "ANA297便 出発",
+          "type": "flight",
+          "location": "羽田空港",
+          "description": "鳥取行き"
+        },
+        {
+          "time": "17:50",
+          "title": "鳥取コナン空港 到着",
+          "type": "flight"
+        }
+      ]
+    }
+  ]
+}
