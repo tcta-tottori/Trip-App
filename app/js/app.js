@@ -19,11 +19,20 @@ const App = (() => {
     if (TripTimer.isDuringTrip()) {
       currentDayIdx = Math.max(0, TripTimer.currentDayIndex());
     }
+    // Schedule reminders (no-op if disabled/unsupported)
+    Notify.gc();
+    Notify.schedule();
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) Notify.schedule();
+    });
   }
 
   function registerSW() {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
+      navigator.serviceWorker.addEventListener('message', e => {
+        if (e.data && e.data.type === 'open-itinerary') go('itinerary');
+      });
     }
   }
 
@@ -572,6 +581,11 @@ const App = (() => {
   function renderSettings() {
     const root = document.getElementById('settings-content');
     const s = Storage.get('settings', { dark: false, kidMode: false });
+    const n = Notify.settings();
+    const permLabel = !Notify.isSupported() ? '非対応'
+      : Notification.permission === 'granted' ? '許可済'
+      : Notification.permission === 'denied'  ? 'ブラウザ設定で拒否'
+      : '未確認';
     root.innerHTML = `
       <div class="setting-section">
         <h3>表示</h3>
@@ -582,6 +596,26 @@ const App = (() => {
         <div class="setting-row">
           <div><div class="label">👶 子ども配慮モード</div><div class="desc">怖さLv4以上を初期で非表示</div></div>
           <label class="switch"><input type="checkbox" id="s-kid" ${s.kidMode ? 'checked' : ''}><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <div class="setting-section">
+        <h3>通知</h3>
+        <div class="setting-row">
+          <div><div class="label">🔔 リマインダ</div><div class="desc">権限: ${permLabel}</div></div>
+          <label class="switch"><input type="checkbox" id="s-notify" ${n.enabled ? 'checked' : ''} ${!Notify.isSupported() ? 'disabled' : ''}><span class="slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div><div class="label">　60分前に通知</div><div class="desc">予定の1時間前</div></div>
+          <label class="switch"><input type="checkbox" id="s-n60" ${n.mins.includes(60) ? 'checked' : ''}><span class="slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div><div class="label">　30分前に通知</div><div class="desc">予定の30分前</div></div>
+          <label class="switch"><input type="checkbox" id="s-n30" ${n.mins.includes(30) ? 'checked' : ''}><span class="slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div><div class="label">　通知をテスト</div><div class="desc">いますぐ1件発火</div></div>
+          <button class="btn small outline" id="s-ntest">テスト</button>
         </div>
       </div>
 
@@ -615,6 +649,36 @@ const App = (() => {
     document.getElementById('s-kid').onchange = e => {
       const settings = Storage.get('settings', {}); settings.kidMode = e.target.checked;
       Storage.set('settings', settings);
+    };
+    const saveNotify = () => {
+      const cur = Notify.settings();
+      const enabled = document.getElementById('s-notify').checked;
+      const mins = [];
+      if (document.getElementById('s-n60').checked) mins.push(60);
+      if (document.getElementById('s-n30').checked) mins.push(30);
+      Storage.set('notifySettings', { enabled, mins: mins.length ? mins : cur.mins });
+      Notify.schedule();
+    };
+    document.getElementById('s-notify').onchange = async (e) => {
+      if (e.target.checked) {
+        const perm = await Notify.requestPermission();
+        if (perm !== 'granted') {
+          e.target.checked = false;
+          toast('通知が許可されていません');
+          renderSettings();
+          return;
+        }
+      }
+      saveNotify();
+      renderSettings();
+    };
+    document.getElementById('s-n60').onchange = saveNotify;
+    document.getElementById('s-n30').onchange = saveNotify;
+    document.getElementById('s-ntest').onclick = async () => {
+      const perm = await Notify.requestPermission();
+      if (perm !== 'granted') { toast('通知が許可されていません'); return; }
+      Notify.show('🏰 ディズニー旅行 2026', 'リマインダのテスト通知です', 'test-' + Date.now());
+      toast('テスト通知を送信');
     };
     document.getElementById('s-export').onclick = () => exportData();
     document.getElementById('s-import').onclick = () => importData();

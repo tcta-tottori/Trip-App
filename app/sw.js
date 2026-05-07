@@ -1,5 +1,5 @@
 // Service Worker for offline support
-const CACHE_NAME = 'disney2026-v1';
+const CACHE_NAME = 'disney2026-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -12,6 +12,7 @@ const ASSETS = [
   './js/timer.js',
   './js/checklist.js',
   './js/map.js',
+  './js/notify.js',
   '../data/attractions.json',
   '../data/itinerary.json',
   '../data/checklist.json',
@@ -33,6 +34,22 @@ self.addEventListener('activate', event => {
     caches.keys().then(keys => Promise.all(
       keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
     )).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
+      for (const c of clients) {
+        if ('focus' in c) {
+          c.focus();
+          c.postMessage({ type: 'open-itinerary' });
+          return;
+        }
+      }
+      return self.clients.openWindow('./index.html#itinerary');
+    })
   );
 });
 
