@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -28,10 +28,13 @@ jobs:
           python3 -m http.server 8080 >/tmp/server.log 2>&1 &
           echo $! > /tmp/server.pid
           for i in {1..20}; do
-            if curl -fsS http://127.0.0.1:8080/app/ -o /dev/null; then break; fi
+            if curl -fsS http://127.0.0.1:8080/app/ -o /dev/null; then
+              echo "Server ready."
+              break
+            fi
             sleep 0.5
           done
-          curl -fsS http://127.0.0.1:8080/app/ -o /dev/null || (cat /tmp/server.log; exit 1)
+          curl -fsS http://127.0.0.1:8080/app/ -o /dev/null
 
       - name: Run Lighthouse
         uses: treosh/lighthouse-ci-action@v12
@@ -39,8 +42,7 @@ jobs:
           urls: |
             http://127.0.0.1:8080/app/
           uploadArtifacts: true
-          temporaryPublicStorage: false
-          configPath: ./.github/lighthouse/lighthouserc.json
+          temporaryPublicStorage: true
 
       - name: Stop server
         if: always()
