@@ -28,12 +28,21 @@ const App = (() => {
   }
 
   function registerSW() {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
-      navigator.serviceWorker.addEventListener('message', e => {
-        if (e.data && e.data.type === 'open-itinerary') go('itinerary');
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      reg.addEventListener('updatefound', () => {
+        const sw = reg.installing;
+        if (!sw) return;
+        sw.addEventListener('statechange', () => {
+          if (sw.state === 'installed' && navigator.serviceWorker.controller) {
+            toast('新しいバージョンが利用可能です。設定 → 再読込で更新できます');
+          }
+        });
       });
-    }
+    }).catch(() => {});
+    navigator.serviceWorker.addEventListener('message', e => {
+      if (e.data && e.data.type === 'open-itinerary') go('itinerary');
+    });
   }
 
   function applyTheme() {
@@ -869,8 +878,12 @@ const App = (() => {
 
       <div class="setting-section">
         <h3>アプリ情報</h3>
-        <div class="setting-row"><div><div class="label">バージョン</div></div><div class="desc">1.0.0</div></div>
-        <div class="setting-row"><div><div class="label">最終更新</div></div><div class="desc">2026-05-07</div></div>
+        <div class="setting-row"><div><div class="label">バージョン</div></div><div class="desc">1.1.0</div></div>
+        <div class="setting-row"><div><div class="label">最終更新</div></div><div class="desc">2026-05-17</div></div>
+        <div class="setting-row">
+          <div><div class="label">🔄 キャッシュを破棄して再読込</div><div class="desc">最新のアプリを取得し直す</div></div>
+          <button class="btn small outline" id="s-reload">再読込</button>
+        </div>
         <div class="setting-row"><div><div class="label">📋 旅程資料</div><div class="desc">印刷用ページ</div></div><a class="btn small outline" href="../docs/" style="text-decoration:none;">開く</a></div>
       </div>
     `;
@@ -934,6 +947,27 @@ const App = (() => {
         applyTheme(); render(currentScreen);
       }
     };
+    document.getElementById('s-reload').onclick = () => forceReload();
+  }
+
+  async function forceReload() {
+    const btn = document.getElementById('s-reload');
+    if (btn) { btn.disabled = true; btn.textContent = '更新中…'; }
+    try {
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      if (window.caches) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+    } catch (e) {
+      console.warn('forceReload cleanup failed', e);
+    }
+    const url = new URL(location.href);
+    url.searchParams.set('_r', Date.now().toString());
+    location.replace(url.toString());
   }
 
   function exportData() {
