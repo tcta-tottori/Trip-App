@@ -103,19 +103,21 @@ def extract_summary_image(body: bytes) -> str | None:
     return src
 
 
-def fetch_summary_image(title: str) -> str | None:
-    q = urllib.parse.quote(title, safe="")
-    for lang in LANGS:
+def fetch_summary_image(titles_by_lang: list[tuple[str, str]]) -> tuple[str, str] | None:
+    """titles_by_lang = [(lang, title), ...] tried in order.
+    Returns (image_url, "lang:title") of the first match, or None."""
+    for lang, title in titles_by_lang:
+        q = urllib.parse.quote(title, safe="")
         body = http_get(ACTION_TMPL.format(lang=lang, title=q))
         if body:
             src = extract_action_image(body)
             if src:
-                return src
+                return src, f"{lang}:{title}"
         body = http_get(SUMMARY_TMPL.format(lang=lang, title=q))
         if body:
             src = extract_summary_image(body)
             if src:
-                return src
+                return src, f"{lang}:{title}"
     return None
 
 
@@ -146,12 +148,14 @@ def resize_cover(raw: bytes, out: Path, w: int = 600, h: int = 400, quality: int
     return True
 
 
-def fetch(title: str, output: Path, label: str, credits: list[str]) -> bool:
+def fetch(titles_by_lang: list[tuple[str, str]], output: Path, label: str, credits: list[str]) -> bool:
     rel = output.relative_to(ROOT)
-    src = fetch_summary_image(title)
-    if not src:
-        print(f"✗ {rel} (no source for '{title}')")
+    result = fetch_summary_image(titles_by_lang)
+    if not result:
+        tried = ", ".join(f"{l}:{t}" for l, t in titles_by_lang)
+        print(f"✗ {rel} (no image — tried {tried})")
         return False
+    src, hit = result
     raw = download_image(src)
     if not raw:
         print(f"✗ {rel} (download failed: {src[:80]})")
@@ -159,60 +163,166 @@ def fetch(title: str, output: Path, label: str, credits: list[str]) -> bool:
     if not resize_cover(raw, output):
         print(f"✗ {rel} (resize failed)")
         return False
-    print(f"✓ {rel}  <-  {src[:90]}")
-    credits.append(f"- **{label}** — {src}")
+    print(f"✓ {rel}  via {hit}")
+    credits.append(f"- **{label}** ({hit}) — {src}")
     return True
 
 
+# Each target: (titles_by_lang, output filename, credits label)
+# titles_by_lang is tried in order. Provide both ja and en candidates so that
+# attractions without a ja article still resolve via en.wikipedia.org.
 TARGETS_LAND = [
-    # (Wikipedia article title, output filename, credits label)
-    ("イッツ・ア・スモールワールド", "small-world.jpg", "Small World"),
-    ("ジャングルクルーズ", "jungle-cruise.jpg", "Jungle Cruise"),
-    ("蒸気船マークトウェイン号", "mark-twain.jpg", "Mark Twain"),
-    ("アリスのティーパーティー", "tea-party.jpg", "Tea Party"),
-    ("キャッスルカルーセル", "carrousel.jpg", "Castle Carrousel"),
-    ("トムソーヤ島", "tom-sawyer.jpg", "Tom Sawyer"),
-    ("ウエスタンリバー鉄道", "western-river.jpg", "Western River RR"),
-    ("ロジャーラビットのカートゥーンスピン", "roger-rabbit.jpg", "Roger Rabbit"),
-    ("プーさんのハニーハント", "pooh.jpg", "Pooh's Hunny Hunt"),
-    ('美女と野獣 "魔法のものがたり"', "beauty-beast.jpg", "Beauty and the Beast"),
-    ("バズ・ライトイヤーのアストロブラスター", "buzz.jpg", "Buzz Lightyear"),
-    ("ベイマックスのハッピーライド", "baymax.jpg", "Baymax"),
-    ('モンスターズ・インク "ライド&ゴーシーク!"', "monsters-inc.jpg", "Monsters Inc"),
-    ("ピーターパン空の旅", "peter-pan.jpg", "Peter Pan"),
-    ("白雪姫と七人のこびと", "snow-white.jpg", "Snow White"),
-    ("ホーンテッドマンション", "haunted-mansion.jpg", "Haunted Mansion"),
-    ("スペース・マウンテン", "space-mountain.jpg", "Space Mountain"),
-    ("スター・ツアーズ", "star-tours.jpg", "Star Tours"),
-    ("スプラッシュ・マウンテン", "splash-mountain.jpg", "Splash Mountain"),
+    ([("ja", "イッツ・ア・スモールワールド"),
+      ("en", "It's a Small World")],
+     "small-world.jpg", "Small World"),
+    ([("ja", "ジャングルクルーズ"),
+      ("en", "Jungle Cruise (attraction)"),
+      ("en", "Jungle Cruise")],
+     "jungle-cruise.jpg", "Jungle Cruise"),
+    ([("ja", "蒸気船マークトウェイン号"),
+      ("en", "Mark Twain Riverboat")],
+     "mark-twain.jpg", "Mark Twain"),
+    ([("ja", "アリスのティーパーティー"),
+      ("en", "Mad Tea Party"),
+      ("en", "Alice's Tea Party")],
+     "tea-party.jpg", "Tea Party"),
+    ([("ja", "キャッスルカルーセル"),
+      ("en", "Castle Carrousel"),
+      ("en", "King Arthur Carrousel")],
+     "carrousel.jpg", "Castle Carrousel"),
+    ([("ja", "トムソーヤ島"),
+      ("en", "Tom Sawyer Island")],
+     "tom-sawyer.jpg", "Tom Sawyer"),
+    ([("ja", "ウエスタンリバー鉄道"),
+      ("en", "Western River Railroad")],
+     "western-river.jpg", "Western River RR"),
+    ([("ja", "ロジャーラビットのカートゥーンスピン"),
+      ("en", "Roger Rabbit's Car Toon Spin")],
+     "roger-rabbit.jpg", "Roger Rabbit"),
+    ([("ja", "プーさんのハニーハント"),
+      ("en", "Pooh's Hunny Hunt"),
+      ("en", "The Many Adventures of Winnie the Pooh (attraction)")],
+     "pooh.jpg", "Pooh's Hunny Hunt"),
+    ([("ja", '美女と野獣 "魔法のものがたり"'),
+      ("ja", "美女と野獣 魔法のものがたり"),
+      ("en", "Enchanted Tale of Beauty and the Beast"),
+      ("en", "Beauty and the Beast: Magic Lasts Forever")],
+     "beauty-beast.jpg", "Beauty and the Beast"),
+    ([("ja", "バズ・ライトイヤーのアストロブラスター"),
+      ("en", "Buzz Lightyear's Space Ranger Spin"),
+      ("en", "Buzz Lightyear Astro Blasters")],
+     "buzz.jpg", "Buzz Lightyear"),
+    ([("ja", "ベイマックスのハッピーライド"),
+      ("en", "The Happy Ride with Baymax")],
+     "baymax.jpg", "Baymax"),
+    ([("ja", 'モンスターズ・インク "ライド&ゴーシーク!"'),
+      ("ja", "モンスターズ・インク ライド&ゴーシーク!"),
+      ("en", "Monsters, Inc. Ride & Go Seek!"),
+      ("en", "Monsters, Inc. Ride & Go Seek")],
+     "monsters-inc.jpg", "Monsters Inc"),
+    ([("ja", "ピーターパン空の旅"),
+      ("en", "Peter Pan's Flight")],
+     "peter-pan.jpg", "Peter Pan"),
+    ([("ja", "白雪姫と七人のこびと"),
+      ("en", "Snow White's Scary Adventures"),
+      ("en", "Snow White's Adventures")],
+     "snow-white.jpg", "Snow White"),
+    ([("ja", "ホーンテッドマンション"),
+      ("en", "Haunted Mansion")],
+     "haunted-mansion.jpg", "Haunted Mansion"),
+    ([("ja", "スペース・マウンテン"),
+      ("en", "Space Mountain")],
+     "space-mountain.jpg", "Space Mountain"),
+    ([("ja", "スター・ツアーズ"),
+      ("en", "Star Tours – The Adventures Continue"),
+      ("en", "Star Tours")],
+     "star-tours.jpg", "Star Tours"),
+    ([("ja", "スプラッシュ・マウンテン"),
+      ("en", "Splash Mountain")],
+     "splash-mountain.jpg", "Splash Mountain"),
 ]
 TARGETS_SEA = [
-    ("マーメイドラグーン", "mermaid-lagoon.jpg", "Mermaid Lagoon"),
-    ("ジャンピン・ジェリーフィッシュ", "jellyfish.jpg", "Jellyfish"),
-    ("ブローフィッシュ・バルーンレース", "blowfish.jpg", "Blowfish"),
-    ("アリエルのプレイグラウンド", "ariel-playground.jpg", "Ariel Playground"),
-    ("ジャスミンのフライングカーペット", "jasmine-carpet.jpg", "Jasmine Carpet"),
-    ("ヴェネツィアン・ゴンドラ", "gondola.jpg", "Gondola"),
-    ("ビッグシティ・ヴィークル", "big-city.jpg", "Big City Vehicles"),
-    ("ディズニーシー・トランジットスチーマーライン", "transit-steamer.jpg", "Transit Steamer"),
-    ("トイ・ストーリー・マニア!", "toy-story-mania.jpg", "Toy Story Mania"),
-    ("ファンタジースプリングス", "rapunzel.jpg", "Fantasy Springs"),
-    ("アナとエルサのフローズンジャーニー", "frozen-journey.jpg", "Frozen Journey"),
-    ("シンドバッド・ストーリーブック・ヴォヤッジ", "sindbad.jpg", "Sindbad"),
-    ("ニモ&フレンズ・シーライダー", "nemo.jpg", "Nemo"),
-    ("タワー・オブ・テラー (東京ディズニーシー)", "tower-terror.jpg", "Tower of Terror"),
-    ("ソアリン:ファンタスティック・フライト", "soaring.jpg", "Soaring"),
-    ("ピーターパンのネバーランドアドベンチャー", "peter-pan-neverland.jpg", "Peter Pan Neverland"),
+    ([("ja", "マーメイドラグーン"),
+      ("en", "Mermaid Lagoon")],
+     "mermaid-lagoon.jpg", "Mermaid Lagoon"),
+    ([("ja", "ジャンピン・ジェリーフィッシュ"),
+      ("en", "Jumpin' Jellyfish")],
+     "jellyfish.jpg", "Jellyfish"),
+    ([("ja", "ブローフィッシュ・バルーンレース"),
+      ("en", "Blowfish Balloon Race")],
+     "blowfish.jpg", "Blowfish"),
+    ([("ja", "アリエルのプレイグラウンド"),
+      ("en", "Ariel's Playground")],
+     "ariel-playground.jpg", "Ariel Playground"),
+    ([("ja", "ジャスミンのフライングカーペット"),
+      ("en", "Jasmine's Flying Carpets"),
+      ("en", "The Magic Carpets of Aladdin")],
+     "jasmine-carpet.jpg", "Jasmine Carpet"),
+    ([("ja", "ヴェネツィアン・ゴンドラ"),
+      ("en", "Venetian Gondolas")],
+     "gondola.jpg", "Gondola"),
+    ([("ja", "ビッグシティ・ヴィークル"),
+      ("en", "Big City Vehicles")],
+     "big-city.jpg", "Big City Vehicles"),
+    ([("ja", "ディズニーシー・トランジットスチーマーライン"),
+      ("en", "DisneySea Transit Steamer Line")],
+     "transit-steamer.jpg", "Transit Steamer"),
+    ([("ja", "トイ・ストーリー・マニア!"),
+      ("ja", "トイ・ストーリー・マニア！"),
+      ("en", "Toy Story Midway Mania!"),
+      ("en", "Toy Story Mania!")],
+     "toy-story-mania.jpg", "Toy Story Mania"),
+    ([("ja", "ファンタジースプリングス"),
+      ("en", "Fantasy Springs")],
+     "rapunzel.jpg", "Fantasy Springs"),
+    ([("ja", "アナとエルサのフローズンジャーニー"),
+      ("en", "Anna and Elsa's Frozen Journey"),
+      ("en", "Frozen Ever After")],
+     "frozen-journey.jpg", "Frozen Journey"),
+    ([("ja", "シンドバッド・ストーリーブック・ヴォヤッジ"),
+      ("en", "Sindbad's Storybook Voyage")],
+     "sindbad.jpg", "Sindbad"),
+    ([("ja", "ニモ&フレンズ・シーライダー"),
+      ("ja", "ニモ＆フレンズ・シーライダー"),
+      ("en", "Nemo & Friends SeaRider")],
+     "nemo.jpg", "Nemo"),
+    ([("ja", "タワー・オブ・テラー (東京ディズニーシー)"),
+      ("ja", "タワー・オブ・テラー"),
+      ("en", "The Twilight Zone Tower of Terror (Tokyo DisneySea)"),
+      ("en", "The Twilight Zone Tower of Terror")],
+     "tower-terror.jpg", "Tower of Terror"),
+    ([("ja", "ソアリン:ファンタスティック・フライト"),
+      ("ja", "ソアリン:ファンタスティック・フライト"),
+      ("en", "Soarin' (attraction)"),
+      ("en", "Soarin'")],
+     "soaring.jpg", "Soaring"),
+    ([("ja", "ピーターパンのネバーランドアドベンチャー"),
+      ("en", "Peter Pan's Never Land Adventure")],
+     "peter-pan-neverland.jpg", "Peter Pan Neverland"),
 ]
 TARGETS_PARKS = [
-    ("シンデレラ城", "cinderella-castle.jpg", "Cinderella Castle"),
-    ("プロメテウス火山", "prometheus.jpg", "Mt. Prometheus"),
-    ("ワールドバザール", "world-bazaar.jpg", "World Bazaar"),
-    ("メディテレーニアンハーバー", "mediterranean-harbor.jpg", "Med Harbor"),
+    ([("ja", "シンデレラ城"),
+      ("en", "Cinderella Castle")],
+     "cinderella-castle.jpg", "Cinderella Castle"),
+    ([("ja", "プロメテウス火山"),
+      ("en", "Mount Prometheus"),
+      ("ja", "東京ディズニーシー")],
+     "prometheus.jpg", "Mt. Prometheus"),
+    ([("ja", "ワールドバザール"),
+      ("en", "World Bazaar"),
+      ("ja", "東京ディズニーランド")],
+     "world-bazaar.jpg", "World Bazaar"),
+    ([("ja", "メディテレーニアンハーバー"),
+      ("en", "Mediterranean Harbor")],
+     "mediterranean-harbor.jpg", "Med Harbor"),
 ]
 TARGETS_HOTELS = [
-    ("浦安ブライトンホテル", "brighton.jpg", "Brighton Hotel"),
-    ("舞浜ユーラシア", "eurasia.jpg", "Eurasia"),
+    ([("ja", "浦安ブライトンホテル"),
+      ("en", "Urayasu Brighton Hotel")],
+     "brighton.jpg", "Brighton Hotel"),
+    ([("ja", "舞浜ユーラシア"),
+      ("ja", "ホテルエミオン東京ベイ")],
+     "eurasia.jpg", "Eurasia"),
 ]
 
 
@@ -235,18 +345,18 @@ def main() -> int:
     ]
 
     ok = miss = 0
-    for title, fname, label in TARGETS_LAND + TARGETS_SEA:
-        if fetch(title, ATTR_DIR / fname, label, credits):
+    for titles, fname, label in TARGETS_LAND + TARGETS_SEA:
+        if fetch(titles, ATTR_DIR / fname, label, credits):
             ok += 1
         else:
             miss += 1
-    for title, fname, label in TARGETS_PARKS:
-        if fetch(title, PARK_DIR / fname, label, credits):
+    for titles, fname, label in TARGETS_PARKS:
+        if fetch(titles, PARK_DIR / fname, label, credits):
             ok += 1
         else:
             miss += 1
-    for title, fname, label in TARGETS_HOTELS:
-        if fetch(title, HOTEL_DIR / fname, label, credits):
+    for titles, fname, label in TARGETS_HOTELS:
+        if fetch(titles, HOTEL_DIR / fname, label, credits):
             ok += 1
         else:
             miss += 1
