@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, claude/new-session-BlJ72, claude/mobile-shareable-url-1gj8c]
+    branches: [main, claude/new-session-BlJ72]
   workflow_dispatch:
 
 permissions:
