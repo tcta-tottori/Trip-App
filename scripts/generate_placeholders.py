@@ -113,43 +113,56 @@ def add_vignette(img):
     return img
 
 
-def draw_theme_motif(img, park):
+def draw_theme_motif(img, park, seed=0):
     """Park-themed silhouette in the middle distance."""
+    rng = random.Random(seed)
     layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
     if park == "sea":
-        # stylized sun/moon + horizon
-        cx, cy, r = W // 2, 150, 70
+        # stylized sun/moon — position varies with seed
+        cx = W // 2 + rng.randint(-60, 60)
+        cy = 130 + rng.randint(-20, 20)
+        r = 60 + rng.randint(-10, 20)
         d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(255, 245, 220, 180))
-        # horizon waves (denser than decor)
-        for i, y in enumerate((230, 260, 290)):
+        # horizon waves
+        base_y = 240 + rng.randint(-15, 15)
+        for i, dy in enumerate((0, 30, 60)):
+            y = base_y + dy
             pts = []
             amp = 14 - i * 2
+            phase = rng.uniform(0, 3.14)
             for x in range(-10, W + 20, 6):
-                pts.append((x, y + int(math.sin(x / 28 + i * 1.4) * amp)))
+                pts.append((x, y + int(math.sin(x / 28 + i * 1.4 + phase) * amp)))
             d.line(pts, fill=(255, 255, 255, 130 - i * 30), width=4)
     else:
-        # castle silhouette (white, soft)
-        cx = W // 2
-        base_y = 280
-        # central tower
-        d.rectangle((cx - 32, base_y - 130, cx + 32, base_y), fill=(255, 255, 255, 170))
-        d.polygon([(cx - 38, base_y - 130), (cx + 38, base_y - 130), (cx, base_y - 200)],
+        # castle silhouette with seeded variation
+        cx = W // 2 + rng.randint(-30, 30)
+        base_y = 280 + rng.randint(-10, 10)
+        central_h = rng.randint(110, 150)
+        side_h = rng.randint(85, 110)
+        wall_h = rng.randint(60, 80)
+        side_x = rng.randint(70, 95)
+        wall_x = rng.randint(135, 165)
+
+        d.rectangle((cx - 32, base_y - central_h, cx + 32, base_y), fill=(255, 255, 255, 170))
+        d.polygon([(cx - 38, base_y - central_h), (cx + 38, base_y - central_h),
+                   (cx, base_y - central_h - 70)],
                   fill=(255, 255, 255, 200))
-        # side towers
         for sgn in (-1, 1):
-            x = cx + sgn * 80
-            d.rectangle((x - 22, base_y - 100, x + 22, base_y), fill=(255, 255, 255, 150))
-            d.polygon([(x - 26, base_y - 100), (x + 26, base_y - 100), (x, base_y - 150)],
+            x = cx + sgn * side_x
+            d.rectangle((x - 22, base_y - side_h, x + 22, base_y), fill=(255, 255, 255, 150))
+            d.polygon([(x - 26, base_y - side_h), (x + 26, base_y - side_h),
+                       (x, base_y - side_h - 50)],
                       fill=(255, 255, 255, 180))
-        # outer walls
         for sgn in (-1, 1):
-            x = cx + sgn * 150
-            d.rectangle((x - 26, base_y - 70, x + 26, base_y), fill=(255, 255, 255, 130))
-            d.polygon([(x - 30, base_y - 70), (x + 30, base_y - 70), (x, base_y - 110)],
+            x = cx + sgn * wall_x
+            d.rectangle((x - 26, base_y - wall_h, x + 26, base_y), fill=(255, 255, 255, 130))
+            d.polygon([(x - 30, base_y - wall_h), (x + 30, base_y - wall_h),
+                       (x, base_y - wall_h - 40)],
                       fill=(255, 255, 255, 160))
         # flag on central spire
-        d.polygon([(cx, base_y - 210), (cx + 16, base_y - 200), (cx, base_y - 190)],
+        flag_top = base_y - central_h - 80
+        d.polygon([(cx, flag_top), (cx + 16, flag_top + 10), (cx, flag_top + 20)],
                   fill=(255, 245, 200, 220))
     layer = layer.filter(ImageFilter.GaussianBlur(radius=1))
     img.paste(layer, (0, 0), layer)
@@ -204,11 +217,11 @@ def park_emoji(a):
 
 def render(path: Path, name: str, palette_lv: int, park: str | None):
     c1, c2 = LV_PALETTE.get(palette_lv, LV_PALETTE[2])
+    seed = hash(path.stem) & 0xFFFF
     img = gradient(c1, c2).convert("RGBA")
     img = add_radial_highlight(img, (W // 2, 110), 280)
-    img = draw_theme_motif(img, park or "land")
-    img = add_decor_shapes(img, hash(path.stem) & 0xFFFF, park or "land")
-    img = draw_name_plate(img, name)
+    img = draw_theme_motif(img, park or "land", seed=seed)
+    img = add_decor_shapes(img, seed, park or "land")
     img = add_vignette(img)
     out = img.convert("RGB")
     path.parent.mkdir(parents=True, exist_ok=True)
