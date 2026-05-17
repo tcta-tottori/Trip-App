@@ -1,12 +1,12 @@
-name: Fetch attraction images
+name: Fetch attraction images and URLs
 
 on:
   workflow_dispatch:
     inputs:
       branch:
-        description: "Commit images to this branch"
+        description: "Commit images and URLs to this branch"
         required: false
-        default: "claude/new-session-BlJ72"
+        default: "claude/mobile-shareable-url-1gj8c"
 
 permissions:
   contents: write
@@ -31,14 +31,17 @@ jobs:
       - name: Fetch images
         run: python3 scripts/fetch_images.py
 
+      - name: Fetch official URLs
+        run: python3 scripts/fetch_official_urls.py
+
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add images/
+          git add images/ data/attractions.json
           if git diff --staged --quiet; then
-            echo "No image changes."
+            echo "No changes."
             exit 0
           fi
-          git commit -m "Refresh attraction images via fetch_images.py"
+          git commit -m "Refresh attraction images and official URLs"
           git push origin HEAD:${{ github.event.inputs.branch }}

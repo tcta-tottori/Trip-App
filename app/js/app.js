@@ -417,6 +417,7 @@ const App = (() => {
         <button class="btn ${isExp ? '' : 'outline'}" id="d-exp">${isExp ? '✓ 体験済み' : '✓ 体験する'}</button>
         <button class="btn outline" id="d-memo">📝 メモ</button>
         <button class="btn outline" id="d-map">🗺️ 地図</button>
+        ${a.url ? `<a class="btn outline" href="${escape(a.url)}" target="_blank" rel="noopener noreferrer">🔗 公式ページ</a>` : ''}
       </div>
     `);
 
