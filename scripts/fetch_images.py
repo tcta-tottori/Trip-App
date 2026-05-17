@@ -10,6 +10,8 @@ from __future__ import annotations
 import io
 import json
 import sys
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -26,38 +28,99 @@ PARK_DIR = ROOT / "images" / "parks"
 HOTEL_DIR = ROOT / "images" / "hotels"
 CRED = ROOT / "images" / "_credits.md"
 
-UA = "disney-trip-2026/1.0 (personal project)"
-SUMMARY_ENDPOINTS = (
-    "https://ja.wikipedia.org/api/rest_v1/page/summary/{}",
-    "https://en.wikipedia.org/api/rest_v1/page/summary/{}",
+# Wikipedia User-Agent policy: include client + URL + contact.
+# https://meta.wikimedia.org/wiki/User-Agent_policy
+UA = (
+    "Trip-App/1.0 "
+    "(https://github.com/tcta-tottori/Trip-App; "
+    "trip-app-bot@users.noreply.github.com) "
+    "Python-urllib/3"
 )
+
+# Try the MediaWiki Action API first (more permissive than rest_v1),
+# then fall back to the REST summary endpoint.
+ACTION_TMPL = (
+    "https://{lang}.wikipedia.org/w/api.php?"
+    "action=query&format=json&prop=pageimages"
+    "&piprop=original%7Cthumbnail&pithumbsize=900"
+    "&redirects=1&titles={title}"
+)
+SUMMARY_TMPL = "https://{lang}.wikipedia.org/api/rest_v1/page/summary/{title}"
+
+LANGS = ("ja", "en")
+
+
+def http_get(url: str, accept: str = "application/json", retries: int = 3) -> bytes | None:
+    """GET with backoff. Prints actual error reason on failure."""
+    last_err = ""
+    for attempt in range(retries):
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": UA, "Accept": accept, "Accept-Language": "ja,en;q=0.8"},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return r.read()
+        except urllib.error.HTTPError as e:
+            last_err = f"HTTP {e.code} {e.reason}"
+            # 429 / 5xx: retry. 4xx other: give up.
+            if e.code == 429 or 500 <= e.code < 600:
+                time.sleep(1.5 * (attempt + 1))
+                continue
+            break
+        except Exception as e:
+            last_err = f"{type(e).__name__}: {e}"
+            time.sleep(1.0 * (attempt + 1))
+    print(f"  !! GET failed: {url[:90]}... -> {last_err}", file=sys.stderr)
+    return None
+
+
+def extract_action_image(body: bytes) -> str | None:
+    try:
+        data = json.loads(body)
+    except Exception:
+        return None
+    pages = data.get("query", {}).get("pages", {})
+    for pid, page in pages.items():
+        if str(pid) == "-1":
+            continue
+        orig = (page.get("original") or {}).get("source")
+        if orig:
+            return orig
+        thumb = (page.get("thumbnail") or {}).get("source")
+        if thumb:
+            return thumb
+    return None
+
+
+def extract_summary_image(body: bytes) -> str | None:
+    try:
+        data = json.loads(body)
+    except Exception:
+        return None
+    src = (data.get("originalimage") or {}).get("source") \
+        or (data.get("thumbnail") or {}).get("source")
+    return src
 
 
 def fetch_summary_image(title: str) -> str | None:
-    quoted = urllib.parse.quote(title, safe="")
-    for tmpl in SUMMARY_ENDPOINTS:
-        url = tmpl.format(quoted)
-        req = urllib.request.Request(url, headers={"User-Agent": UA})
-        try:
-            with urllib.request.urlopen(req, timeout=15) as r:
-                data = json.load(r)
-        except Exception:
-            continue
-        src = (data.get("originalimage") or {}).get("source") \
-            or (data.get("thumbnail") or {}).get("source")
-        if src:
-            return src
+    q = urllib.parse.quote(title, safe="")
+    for lang in LANGS:
+        body = http_get(ACTION_TMPL.format(lang=lang, title=q))
+        if body:
+            src = extract_action_image(body)
+            if src:
+                return src
+        body = http_get(SUMMARY_TMPL.format(lang=lang, title=q))
+        if body:
+            src = extract_summary_image(body)
+            if src:
+                return src
     return None
 
 
 def download_image(url: str) -> bytes | None:
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            return r.read()
-    except Exception as e:
-        print(f"  download failed: {e}", file=sys.stderr)
-        return None
+    return http_get(url, accept="image/*")
 
 
 def resize_cover(raw: bytes, out: Path, w: int = 600, h: int = 400, quality: int = 85) -> bool:
@@ -84,23 +147,25 @@ def resize_cover(raw: bytes, out: Path, w: int = 600, h: int = 400, quality: int
 
 
 def fetch(title: str, output: Path, label: str, credits: list[str]) -> bool:
+    rel = output.relative_to(ROOT)
     src = fetch_summary_image(title)
     if not src:
-        print(f"✗ {output.relative_to(ROOT)} (no source for '{title}')")
+        print(f"✗ {rel} (no source for '{title}')")
         return False
     raw = download_image(src)
     if not raw:
-        print(f"✗ {output.relative_to(ROOT)} (download failed)")
+        print(f"✗ {rel} (download failed: {src[:80]})")
         return False
     if not resize_cover(raw, output):
-        print(f"✗ {output.relative_to(ROOT)} (resize failed)")
+        print(f"✗ {rel} (resize failed)")
         return False
-    print(f"✓ {output.relative_to(ROOT)}")
+    print(f"✓ {rel}  <-  {src[:90]}")
     credits.append(f"- **{label}** — {src}")
     return True
 
 
 TARGETS_LAND = [
+    # (Wikipedia article title, output filename, credits label)
     ("イッツ・ア・スモールワールド", "small-world.jpg", "Small World"),
     ("ジャングルクルーズ", "jungle-cruise.jpg", "Jungle Cruise"),
     ("蒸気船マークトウェイン号", "mark-twain.jpg", "Mark Twain"),
@@ -156,10 +221,15 @@ def main() -> int:
     PARK_DIR.mkdir(parents=True, exist_ok=True)
     HOTEL_DIR.mkdir(parents=True, exist_ok=True)
 
+    print(f"User-Agent: {UA}\n")
+
     credits: list[str] = [
         "# Image credits",
         "",
-        "All images sourced from Wikimedia Commons / Japanese Wikipedia under their respective licenses.",
+        "Real photos fetched from Wikimedia Commons / Japanese Wikipedia by",
+        "`scripts/fetch_images.py`. Missing entries fall back to the generated",
+        "placeholders produced by `scripts/generate_placeholders.py`.",
+        "",
         "Run `python3 scripts/fetch_images.py` to refresh.",
         "",
     ]
@@ -182,7 +252,9 @@ def main() -> int:
             miss += 1
 
     CRED.write_text("\n".join(credits) + "\n", encoding="utf-8")
-    print(f"\nDone. {ok} ok / {miss} missing. Missing images use the fallback UI.")
+    print(f"\nDone. {ok} ok / {miss} missing. Missing images keep their placeholders.")
+    # Always exit 0 so the CI's follow-up steps (URL fetch, commit) still run
+    # even if every Wikipedia request failed.
     return 0
 
 
