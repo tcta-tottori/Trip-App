@@ -15,20 +15,20 @@ Run `python3 scripts/fetch_images.py` to refresh.
 - **Roger Rabbit** (en:Roger Rabbit's Car Toon Spin) — https://upload.wikimedia.org/wikipedia/commons/f/fc/Roger_Rabbit%27s_Car_Toon_Spin_sign_at_Disneyland.jpg
 - **Pooh's Hunny Hunt** (en:Pooh's Hunny Hunt) — https://upload.wikimedia.org/wikipedia/en/4/41/Pooh_hunny_hunt_entrance.jpg
 - **Beauty and the Beast** (en:Enchanted Tale of Beauty and the Beast) — https://upload.wikimedia.org/wikipedia/commons/b/b7/Tokyo_Disneyland_%28Oct_2020%29_6.jpg
-- **Baymax** (en:The Happy Ride with Baymax) — https://upload.wikimedia.org/wikipedia/commons/f/fa/Tokyo_Disneyland_The_Happy_Ride_with_Baymax_%2853441939663%29.jpg
+- **Buzz Lightyear** (commons-cat:Buzz Lightyear's Space Ranger Spin) — https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Buzz_Lightyear%27s_Space_Ranger_Spin_Entrance_%284730826024%29.jpg/960px-Buzz_Lightyear%27s_Space_Ranger_Spin_Entrance_%284730826024%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
 - **Monsters Inc** (en:Monsters, Inc. Ride & Go Seek) — https://upload.wikimedia.org/wikipedia/commons/a/a1/Monsters%2C_Inc._Ride_%26_Go_Seek_2.jpg
 - **Peter Pan** (en:Peter Pan's Flight) — https://upload.wikimedia.org/wikipedia/commons/1/15/Dlp_peter_pan.jpg
 - **Snow White** (en:Snow White's Scary Adventures) — https://upload.wikimedia.org/wikipedia/commons/8/81/Snow_White%27s_Enchanted_Wish_%28Disneyland%29_1.jpg
 - **Space Mountain** (en:Space Mountain) — https://upload.wikimedia.org/wikipedia/commons/a/a1/Space_mountain.jpg
 - **Splash Mountain** (en:Splash Mountain) — https://upload.wikimedia.org/wikipedia/commons/c/c8/Splash_Mountain%2C_Tokyo_Disneyland_%289409908130%29.jpg
 - **Mermaid Lagoon** (en:Mermaid Lagoon) — https://upload.wikimedia.org/wikipedia/commons/0/04/Tokyo_DisneySea_Mermaid_Lagoon_Exterior_20130607.jpg
-- **Jellyfish** (en:Jumpin' Jellyfish) — https://upload.wikimedia.org/wikipedia/commons/5/5f/Jumpin_Jellyfish_sign.jpg
+- **Blowfish** (commons-cat:Mermaid Lagoon) — https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Mermaid_lagoon_at_Tokyo_Disney_sea.jpg/960px-Mermaid_lagoon_at_Tokyo_Disney_sea.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
+- **Ariel Playground** (commons-cat:Mermaid Lagoon) — https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Mermaid_lagoon_at_Tokyo_Disney_sea.jpg/960px-Mermaid_lagoon_at_Tokyo_Disney_sea.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
 - **Jasmine Carpet** (en:Jasmine's Flying Carpets) — https://upload.wikimedia.org/wikipedia/commons/e/e5/Tokyo_DisneySea_The_Magic_Carpets_of_Aladdin_201306.jpg
 - **Gondola** (en:Venetian Gondolas) — https://upload.wikimedia.org/wikipedia/commons/d/d4/Tokyo_DisneySea_-_Venice.jpg
 - **Fantasy Springs** (en:Fantasy Springs) — https://upload.wikimedia.org/wikipedia/en/2/2e/Fantasy_Springs_Logo_%28Tokyo_DisneySea%29.webp
 - **Frozen Journey** (en:Anna and Elsa's Frozen Journey) — https://upload.wikimedia.org/wikipedia/commons/b/bd/Frozen_Ever_After_Sign_%2827803925036%29.jpg
 - **Sindbad** (en:Sindbad's Storybook Voyage) — https://upload.wikimedia.org/wikipedia/commons/2/25/Sindbad%27s_Storybook_Voyage_scene.JPG
-- **Nemo** (en:Nemo & Friends SeaRider) — https://upload.wikimedia.org/wikipedia/commons/5/56/Nemo_%26_Friends_SeaRider_1.jpg
 - **Tower of Terror** (en:The Twilight Zone Tower of Terror) — https://upload.wikimedia.org/wikipedia/commons/8/89/The_Twilight_Zone_Tower_of_Terror_logo.jpg
 - **Cinderella Castle** (ja:シンデレラ城) — https://upload.wikimedia.org/wikipedia/commons/6/6b/Cinderella_Castle%2C_Magic_Kingdom_Walt_Disney_World_%282024%29.jpg
 - **World Bazaar** (en:World Bazaar) — https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Main_Street%2C_U.S.A._logo.svg/960px-Main_Street%2C_U.S.A._logo.svg.png
