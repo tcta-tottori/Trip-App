@@ -95,6 +95,38 @@ h1, h2, h3 { font-family: 'Shippori Mincho', serif; letter-spacing: 0.02em; }
 }
 .more-menu button:hover { background: var(--line); }
 
+/* ---------- Pull to refresh ---------- */
+.ptr {
+  position: fixed;
+  top: 0; left: 50%;
+  transform: translateX(-50%) translateY(-60px);
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s ease, transform .25s ease;
+  padding-top: env(safe-area-inset-top, 0);
+}
+.ptr.visible { opacity: 1; }
+.ptr-circle {
+  width: 44px; height: 44px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  color: var(--rouge);
+}
+.ptr-arrow {
+  font-size: 22px; line-height: 1;
+  display: inline-block;
+  transition: transform .2s ease;
+}
+.ptr.ready .ptr-circle {
+  background: var(--rouge); color: #fff; border-color: var(--rouge);
+}
+.ptr.refreshing .ptr-arrow { animation: ptr-spin .8s linear infinite; }
+@keyframes ptr-spin { to { transform: rotate(360deg); } }
+
 /* ---------- Cards ---------- */
 .card {
   background: var(--card);

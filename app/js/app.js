@@ -13,6 +13,7 @@ const App = (() => {
     await DataStore.load();
     bindNav();
     bindGlobal();
+    setupPullToRefresh();
     registerSW();
     handleHash();
     window.addEventListener('hashchange', handleHash);
@@ -25,6 +26,80 @@ const App = (() => {
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) Notify.schedule();
     });
+  }
+
+  // ---------- Pull-to-refresh ----------
+  function setupPullToRefresh() {
+    const indicator = document.createElement('div');
+    indicator.className = 'ptr';
+    indicator.innerHTML = '<div class="ptr-circle"><span class="ptr-arrow">↓</span></div>';
+    document.body.appendChild(indicator);
+    const circle = indicator.querySelector('.ptr-circle');
+    const arrow = indicator.querySelector('.ptr-arrow');
+
+    const THRESHOLD = 70;
+    const MAX_PULL = 130;
+    let startY = 0;
+    let lastY = 0;
+    let pulling = false;
+    let refreshing = false;
+
+    function reset() {
+      pulling = false;
+      indicator.style.transform = '';
+      indicator.classList.remove('visible', 'ready');
+      arrow.textContent = '↓';
+    }
+
+    function shouldIgnore(target) {
+      if (refreshing) return true;
+      if (!document.getElementById('modal').hidden) return true;
+      if (currentScreen === 'map') return true;
+      if (target && target.closest && target.closest('input, textarea, select, [contenteditable]')) return true;
+      if (window.scrollY > 0) return true;
+      return false;
+    }
+
+    document.addEventListener('touchstart', e => {
+      if (e.touches.length !== 1) return;
+      if (shouldIgnore(e.target)) return;
+      startY = e.touches[0].clientY;
+      lastY = startY;
+      pulling = true;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', e => {
+      if (!pulling) return;
+      lastY = e.touches[0].clientY;
+      const dy = lastY - startY;
+      if (dy <= 0) { reset(); return; }
+      // dampen the pull so it feels rubbery
+      const pull = Math.min(dy * 0.55, MAX_PULL);
+      indicator.classList.add('visible');
+      indicator.classList.toggle('ready', pull >= THRESHOLD);
+      arrow.textContent = pull >= THRESHOLD ? '↑' : '↓';
+      indicator.style.transform = `translateX(-50%) translateY(${pull}px)`;
+      // prevent body scroll/jiggle while pulling
+      if (dy > 6 && e.cancelable) e.preventDefault();
+    }, { passive: false });
+
+    function finish() {
+      if (!pulling) return;
+      const dy = lastY - startY;
+      const pull = Math.min(dy * 0.55, MAX_PULL);
+      if (pull >= THRESHOLD) {
+        refreshing = true;
+        indicator.classList.add('refreshing', 'ready');
+        indicator.style.transform = `translateX(-50%) translateY(${THRESHOLD}px)`;
+        arrow.textContent = '↻';
+        forceReload();
+      } else {
+        reset();
+      }
+      pulling = false;
+    }
+    document.addEventListener('touchend', finish, { passive: true });
+    document.addEventListener('touchcancel', () => { reset(); }, { passive: true });
   }
 
   function registerSW() {
@@ -878,7 +953,7 @@ const App = (() => {
 
       <div class="setting-section">
         <h3>アプリ情報</h3>
-        <div class="setting-row"><div><div class="label">バージョン</div></div><div class="desc">1.1.0</div></div>
+        <div class="setting-row"><div><div class="label">バージョン</div></div><div class="desc">1.2.0</div></div>
         <div class="setting-row"><div><div class="label">最終更新</div></div><div class="desc">2026-05-17</div></div>
         <div class="setting-row">
           <div><div class="label">🔄 キャッシュを破棄して再読込</div><div class="desc">最新のアプリを取得し直す</div></div>
