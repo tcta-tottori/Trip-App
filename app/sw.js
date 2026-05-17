@@ -1,5 +1,5 @@
 // Service Worker for offline support
-const CACHE_NAME = 'disney2026-v5';
+const CACHE_NAME = 'disney2026-v6';
 const ASSETS = [
   './',
   './index.html',

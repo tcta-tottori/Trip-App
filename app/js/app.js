@@ -953,7 +953,7 @@ const App = (() => {
 
       <div class="setting-section">
         <h3>アプリ情報</h3>
-        <div class="setting-row"><div><div class="label">バージョン</div></div><div class="desc">1.2.0</div></div>
+        <div class="setting-row"><div><div class="label">バージョン</div></div><div class="desc">1.3.0</div></div>
         <div class="setting-row"><div><div class="label">最終更新</div></div><div class="desc">2026-05-17</div></div>
         <div class="setting-row">
           <div><div class="label">🔄 キャッシュを破棄して再読込</div><div class="desc">最新のアプリを取得し直す</div></div>
