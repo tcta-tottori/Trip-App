@@ -46,7 +46,22 @@ ACTION_TMPL = (
     "&redirects=1&titles={title}"
 )
 SUMMARY_TMPL = "https://{lang}.wikipedia.org/api/rest_v1/page/summary/{title}"
-
+# Commons category listing — returns image URLs for files in a category.
+# Useful when no single Wikipedia article exists for an attraction.
+COMMONS_CAT_TMPL = (
+    "https://commons.wikimedia.org/w/api.php?"
+    "action=query&format=json&generator=categorymembers"
+    "&gcmtitle=Category:{cat}&gcmtype=file&gcmlimit=20"
+    "&prop=imageinfo&iiprop=url&iiurlwidth=900"
+)
+# Commons full-text file search — most robust fallback. Picks the top
+# matching file for a keyword query.
+COMMONS_SEARCH_TMPL = (
+    "https://commons.wikimedia.org/w/api.php?"
+    "action=query&format=json&generator=search"
+    "&gsrnamespace=6&gsrsearch={q}&gsrlimit=10"
+    "&prop=imageinfo&iiprop=url&iiurlwidth=900"
+)
 LANGS = ("ja", "en")
 
 
@@ -103,21 +118,60 @@ def extract_summary_image(body: bytes) -> str | None:
     return src
 
 
-def fetch_summary_image(titles_by_lang: list[tuple[str, str]]) -> tuple[str, str] | None:
-    """titles_by_lang = [(lang, title), ...] tried in order.
-    Returns (image_url, "lang:title") of the first match, or None."""
-    for lang, title in titles_by_lang:
-        q = urllib.parse.quote(title, safe="")
-        body = http_get(ACTION_TMPL.format(lang=lang, title=q))
+def extract_commons_image(body: bytes) -> str | None:
+    """Return the first usable image URL from a Commons categorymembers response."""
+    try:
+        data = json.loads(body)
+    except Exception:
+        return None
+    pages = data.get("query", {}).get("pages", {})
+    # Sort by pageid for deterministic ordering.
+    for pid in sorted(pages, key=lambda k: int(k) if str(k).lstrip("-").isdigit() else 0):
+        page = pages[pid]
+        title = (page.get("title") or "").lower()
+        # Skip videos / audio.
+        if title.endswith((".webm", ".ogv", ".ogg", ".mp4", ".pdf", ".svg")):
+            continue
+        ii = page.get("imageinfo") or []
+        if not ii:
+            continue
+        src = ii[0].get("thumburl") or ii[0].get("url")
+        if src:
+            return src
+    return None
+
+
+def fetch_summary_image(titles: list[tuple[str, str]]) -> tuple[str, str] | None:
+    """titles = [(kind, value), ...] tried in order.
+    kind is 'ja' | 'en' | 'cat' | 'search'.
+    Returns (image_url, "kind:value") of the first match, or None."""
+    for kind, value in titles:
+        q = urllib.parse.quote(value, safe="")
+        if kind == "cat":
+            body = http_get(COMMONS_CAT_TMPL.format(cat=q))
+            if body:
+                src = extract_commons_image(body)
+                if src:
+                    return src, f"commons-cat:{value}"
+            continue
+        if kind == "search":
+            body = http_get(COMMONS_SEARCH_TMPL.format(q=q))
+            if body:
+                src = extract_commons_image(body)
+                if src:
+                    return src, f"commons-search:{value}"
+            continue
+        # Wikipedia language editions
+        body = http_get(ACTION_TMPL.format(lang=kind, title=q))
         if body:
             src = extract_action_image(body)
             if src:
-                return src, f"{lang}:{title}"
-        body = http_get(SUMMARY_TMPL.format(lang=lang, title=q))
+                return src, f"{kind}:{value}"
+        body = http_get(SUMMARY_TMPL.format(lang=kind, title=q))
         if body:
             src = extract_summary_image(body)
             if src:
-                return src, f"{lang}:{title}"
+                return src, f"{kind}:{value}"
     return None
 
 
@@ -173,7 +227,10 @@ def fetch(titles_by_lang: list[tuple[str, str]], output: Path, label: str, credi
 # attractions without a ja article still resolve via en.wikipedia.org.
 TARGETS_LAND = [
     ([("ja", "イッツ・ア・スモールワールド"),
-      ("en", "It's a Small World")],
+      ("en", "It's a Small World"),
+      ("cat", "It's a Small World at Tokyo Disneyland"),
+      ("cat", "It's a Small World"),
+      ("search", "Small World Tokyo Disneyland")],
      "small-world.jpg", "Small World"),
     ([("ja", "ジャングルクルーズ"),
       ("en", "Jungle Cruise (attraction)"),
@@ -210,7 +267,9 @@ TARGETS_LAND = [
      "beauty-beast.jpg", "Beauty and the Beast"),
     ([("ja", "バズ・ライトイヤーのアストロブラスター"),
       ("en", "Buzz Lightyear's Space Ranger Spin"),
-      ("en", "Buzz Lightyear Astro Blasters")],
+      ("en", "Buzz Lightyear Astro Blasters"),
+      ("cat", "Buzz Lightyear's Astro Blasters"),
+      ("cat", "Buzz Lightyear's Space Ranger Spin")],
      "buzz.jpg", "Buzz Lightyear"),
     ([("ja", "ベイマックスのハッピーライド"),
       ("en", "The Happy Ride with Baymax")],
@@ -228,14 +287,21 @@ TARGETS_LAND = [
       ("en", "Snow White's Adventures")],
      "snow-white.jpg", "Snow White"),
     ([("ja", "ホーンテッドマンション"),
-      ("en", "Haunted Mansion")],
+      ("en", "Haunted Mansion"),
+      ("en", "The Haunted Mansion"),
+      ("cat", "Haunted Mansion at Tokyo Disneyland"),
+      ("cat", "Haunted Mansion (Disneyland)"),
+      ("search", "Haunted Mansion Tokyo Disneyland")],
      "haunted-mansion.jpg", "Haunted Mansion"),
     ([("ja", "スペース・マウンテン"),
       ("en", "Space Mountain")],
      "space-mountain.jpg", "Space Mountain"),
     ([("ja", "スター・ツアーズ"),
       ("en", "Star Tours – The Adventures Continue"),
-      ("en", "Star Tours")],
+      ("en", "Star Tours"),
+      ("cat", "Star Tours – The Adventures Continue"),
+      ("cat", "Star Tours"),
+      ("search", "Star Tours Tokyo Disneyland")],
      "star-tours.jpg", "Star Tours"),
     ([("ja", "スプラッシュ・マウンテン"),
       ("en", "Splash Mountain")],
@@ -249,10 +315,14 @@ TARGETS_SEA = [
       ("en", "Jumpin' Jellyfish")],
      "jellyfish.jpg", "Jellyfish"),
     ([("ja", "ブローフィッシュ・バルーンレース"),
-      ("en", "Blowfish Balloon Race")],
+      ("en", "Blowfish Balloon Race"),
+      ("cat", "Blowfish Balloon Race"),
+      ("cat", "Mermaid Lagoon")],
      "blowfish.jpg", "Blowfish"),
     ([("ja", "アリエルのプレイグラウンド"),
-      ("en", "Ariel's Playground")],
+      ("en", "Ariel's Playground"),
+      ("cat", "Ariel's Playground"),
+      ("cat", "Mermaid Lagoon")],
      "ariel-playground.jpg", "Ariel Playground"),
     ([("ja", "ジャスミンのフライングカーペット"),
       ("en", "Jasmine's Flying Carpets"),
@@ -262,15 +332,24 @@ TARGETS_SEA = [
       ("en", "Venetian Gondolas")],
      "gondola.jpg", "Gondola"),
     ([("ja", "ビッグシティ・ヴィークル"),
-      ("en", "Big City Vehicles")],
+      ("en", "Big City Vehicles"),
+      ("cat", "Big City Vehicles"),
+      ("search", "Big City Vehicles Tokyo DisneySea"),
+      ("search", "American Waterfront Tokyo DisneySea")],
      "big-city.jpg", "Big City Vehicles"),
     ([("ja", "ディズニーシー・トランジットスチーマーライン"),
-      ("en", "DisneySea Transit Steamer Line")],
+      ("en", "DisneySea Transit Steamer Line"),
+      ("cat", "DisneySea Transit Steamer Line"),
+      ("search", "DisneySea Transit Steamer"),
+      ("search", "Tokyo DisneySea harbor")],
      "transit-steamer.jpg", "Transit Steamer"),
     ([("ja", "トイ・ストーリー・マニア!"),
       ("ja", "トイ・ストーリー・マニア！"),
       ("en", "Toy Story Midway Mania!"),
-      ("en", "Toy Story Mania!")],
+      ("en", "Toy Story Mania!"),
+      ("cat", "Toy Story Mania!"),
+      ("cat", "Toy Story Midway Mania!"),
+      ("search", "Toy Story Mania Tokyo DisneySea")],
      "toy-story-mania.jpg", "Toy Story Mania"),
     ([("ja", "ファンタジースプリングス"),
       ("en", "Fantasy Springs")],
@@ -294,10 +373,18 @@ TARGETS_SEA = [
     ([("ja", "ソアリン:ファンタスティック・フライト"),
       ("ja", "ソアリン:ファンタスティック・フライト"),
       ("en", "Soarin' (attraction)"),
-      ("en", "Soarin'")],
+      ("en", "Soarin'"),
+      ("cat", "Soaring: Fantastic Flight"),
+      ("cat", "Soarin'"),
+      ("search", "Soaring Fantastic Flight Tokyo DisneySea"),
+      ("search", "Mediterranean Harbor Tokyo DisneySea")],
      "soaring.jpg", "Soaring"),
     ([("ja", "ピーターパンのネバーランドアドベンチャー"),
-      ("en", "Peter Pan's Never Land Adventure")],
+      ("en", "Peter Pan's Never Land Adventure"),
+      ("cat", "Peter Pan's Never Land Adventure"),
+      ("cat", "Fantasy Springs (Tokyo DisneySea)"),
+      ("search", "Peter Pan Never Land Tokyo DisneySea"),
+      ("search", "Fantasy Springs Tokyo DisneySea")],
      "peter-pan-neverland.jpg", "Peter Pan Neverland"),
 ]
 TARGETS_PARKS = [
@@ -306,7 +393,11 @@ TARGETS_PARKS = [
      "cinderella-castle.jpg", "Cinderella Castle"),
     ([("ja", "プロメテウス火山"),
       ("en", "Mount Prometheus"),
-      ("ja", "東京ディズニーシー")],
+      ("ja", "東京ディズニーシー"),
+      ("cat", "Mount Prometheus"),
+      ("cat", "Mysterious Island (Tokyo DisneySea)"),
+      ("search", "Mount Prometheus Tokyo DisneySea"),
+      ("search", "Mysterious Island DisneySea")],
      "prometheus.jpg", "Mt. Prometheus"),
     ([("ja", "ワールドバザール"),
       ("en", "World Bazaar"),
