@@ -54,6 +54,14 @@ COMMONS_CAT_TMPL = (
     "&gcmtitle=Category:{cat}&gcmtype=file&gcmlimit=20"
     "&prop=imageinfo&iiprop=url&iiurlwidth=900"
 )
+# Commons full-text file search — most robust fallback. Picks the top
+# matching file for a keyword query.
+COMMONS_SEARCH_TMPL = (
+    "https://commons.wikimedia.org/w/api.php?"
+    "action=query&format=json&generator=search"
+    "&gsrnamespace=6&gsrsearch={q}&gsrlimit=10"
+    "&prop=imageinfo&iiprop=url&iiurlwidth=900"
+)
 LANGS = ("ja", "en")
 
 
@@ -134,7 +142,8 @@ def extract_commons_image(body: bytes) -> str | None:
 
 
 def fetch_summary_image(titles: list[tuple[str, str]]) -> tuple[str, str] | None:
-    """titles = [(kind, value), ...] tried in order. kind is 'ja' | 'en' | 'cat'.
+    """titles = [(kind, value), ...] tried in order.
+    kind is 'ja' | 'en' | 'cat' | 'search'.
     Returns (image_url, "kind:value") of the first match, or None."""
     for kind, value in titles:
         q = urllib.parse.quote(value, safe="")
@@ -144,6 +153,13 @@ def fetch_summary_image(titles: list[tuple[str, str]]) -> tuple[str, str] | None
                 src = extract_commons_image(body)
                 if src:
                     return src, f"commons-cat:{value}"
+            continue
+        if kind == "search":
+            body = http_get(COMMONS_SEARCH_TMPL.format(q=q))
+            if body:
+                src = extract_commons_image(body)
+                if src:
+                    return src, f"commons-search:{value}"
             continue
         # Wikipedia language editions
         body = http_get(ACTION_TMPL.format(lang=kind, title=q))
@@ -213,7 +229,8 @@ TARGETS_LAND = [
     ([("ja", "イッツ・ア・スモールワールド"),
       ("en", "It's a Small World"),
       ("cat", "It's a Small World at Tokyo Disneyland"),
-      ("cat", "It's a Small World")],
+      ("cat", "It's a Small World"),
+      ("search", "Small World Tokyo Disneyland")],
      "small-world.jpg", "Small World"),
     ([("ja", "ジャングルクルーズ"),
       ("en", "Jungle Cruise (attraction)"),
@@ -273,7 +290,8 @@ TARGETS_LAND = [
       ("en", "Haunted Mansion"),
       ("en", "The Haunted Mansion"),
       ("cat", "Haunted Mansion at Tokyo Disneyland"),
-      ("cat", "Haunted Mansion (Disneyland)")],
+      ("cat", "Haunted Mansion (Disneyland)"),
+      ("search", "Haunted Mansion Tokyo Disneyland")],
      "haunted-mansion.jpg", "Haunted Mansion"),
     ([("ja", "スペース・マウンテン"),
       ("en", "Space Mountain")],
@@ -282,7 +300,8 @@ TARGETS_LAND = [
       ("en", "Star Tours – The Adventures Continue"),
       ("en", "Star Tours"),
       ("cat", "Star Tours – The Adventures Continue"),
-      ("cat", "Star Tours")],
+      ("cat", "Star Tours"),
+      ("search", "Star Tours Tokyo Disneyland")],
      "star-tours.jpg", "Star Tours"),
     ([("ja", "スプラッシュ・マウンテン"),
       ("en", "Splash Mountain")],
@@ -315,19 +334,22 @@ TARGETS_SEA = [
     ([("ja", "ビッグシティ・ヴィークル"),
       ("en", "Big City Vehicles"),
       ("cat", "Big City Vehicles"),
-      ("cat", "American Waterfront")],
+      ("search", "Big City Vehicles Tokyo DisneySea"),
+      ("search", "American Waterfront Tokyo DisneySea")],
      "big-city.jpg", "Big City Vehicles"),
     ([("ja", "ディズニーシー・トランジットスチーマーライン"),
       ("en", "DisneySea Transit Steamer Line"),
       ("cat", "DisneySea Transit Steamer Line"),
-      ("cat", "Tokyo DisneySea")],
+      ("search", "DisneySea Transit Steamer"),
+      ("search", "Tokyo DisneySea harbor")],
      "transit-steamer.jpg", "Transit Steamer"),
     ([("ja", "トイ・ストーリー・マニア!"),
       ("ja", "トイ・ストーリー・マニア！"),
       ("en", "Toy Story Midway Mania!"),
       ("en", "Toy Story Mania!"),
       ("cat", "Toy Story Mania!"),
-      ("cat", "Toy Story Midway Mania!")],
+      ("cat", "Toy Story Midway Mania!"),
+      ("search", "Toy Story Mania Tokyo DisneySea")],
      "toy-story-mania.jpg", "Toy Story Mania"),
     ([("ja", "ファンタジースプリングス"),
       ("en", "Fantasy Springs")],
@@ -353,12 +375,16 @@ TARGETS_SEA = [
       ("en", "Soarin' (attraction)"),
       ("en", "Soarin'"),
       ("cat", "Soaring: Fantastic Flight"),
-      ("cat", "Soarin'")],
+      ("cat", "Soarin'"),
+      ("search", "Soaring Fantastic Flight Tokyo DisneySea"),
+      ("search", "Mediterranean Harbor Tokyo DisneySea")],
      "soaring.jpg", "Soaring"),
     ([("ja", "ピーターパンのネバーランドアドベンチャー"),
       ("en", "Peter Pan's Never Land Adventure"),
       ("cat", "Peter Pan's Never Land Adventure"),
-      ("cat", "Fantasy Springs (Tokyo DisneySea)")],
+      ("cat", "Fantasy Springs (Tokyo DisneySea)"),
+      ("search", "Peter Pan Never Land Tokyo DisneySea"),
+      ("search", "Fantasy Springs Tokyo DisneySea")],
      "peter-pan-neverland.jpg", "Peter Pan Neverland"),
 ]
 TARGETS_PARKS = [
@@ -369,7 +395,9 @@ TARGETS_PARKS = [
       ("en", "Mount Prometheus"),
       ("ja", "東京ディズニーシー"),
       ("cat", "Mount Prometheus"),
-      ("cat", "Mysterious Island (Tokyo DisneySea)")],
+      ("cat", "Mysterious Island (Tokyo DisneySea)"),
+      ("search", "Mount Prometheus Tokyo DisneySea"),
+      ("search", "Mysterious Island DisneySea")],
      "prometheus.jpg", "Mt. Prometheus"),
     ([("ja", "ワールドバザール"),
       ("en", "World Bazaar"),
