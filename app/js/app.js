@@ -1,11 +1,13 @@
 // Main app
 const App = (() => {
   // Updated at each commit; surfaces on the 設定 → アプリ情報 row
-  const BUILD_TIME = '2026-05-18 20:30';
+  const BUILD_TIME = '2026-05-18 21:30';
   const SCREENS = ['home', 'itinerary', 'attractions', 'map', 'checklist', 'emergency', 'memos', 'settings'];
   let currentScreen = 'home';
   let currentDayIdx = 0;
   let currentParkTab = 'land';
+  let currentCategoryTab = 'ride';
+  let currentMapCategory = 'ride';
   let currentChecklistCat = 'all';
   let countdownInterval = null;
 
@@ -566,23 +568,36 @@ const App = (() => {
       b.onclick = () => { currentParkTab = b.dataset.park; renderAttractions(); };
     });
 
+    document.querySelectorAll('.cat-tab').forEach(b => {
+      b.classList.toggle('active', b.dataset.cat === currentCategoryTab);
+      b.onclick = () => { currentCategoryTab = b.dataset.cat; renderAttractions(); };
+    });
+
+    // Ride-only filters are not meaningful for restaurants/shows/etc.,
+    // so hide them when a non-ride category is selected.
+    const filterBlock = document.getElementById('attraction-filters');
+    const showRideFilters = currentCategoryTab === 'ride';
+    if (filterBlock) filterBlock.style.display = showRideFilters ? '' : 'none';
+
     ['f-safe', 'f-height', 'f-fav', 'f-unrid', 'f-open'].forEach(id => {
       const el = document.getElementById(id);
       el.onchange = () => renderAttractions();
     });
 
-    const safeOnly  = document.getElementById('f-safe').checked;
-    const heightOk  = document.getElementById('f-height').checked;
+    const safeOnly  = document.getElementById('f-safe').checked && showRideFilters;
+    const heightOk  = document.getElementById('f-height').checked && showRideFilters;
     const favOnly   = document.getElementById('f-fav').checked;
-    const unridden  = document.getElementById('f-unrid').checked;
+    const unridden  = document.getElementById('f-unrid').checked && showRideFilters;
     const openOnly  = document.getElementById('f-open').checked;
     const settings  = Storage.get('settings', {});
-    const kidMode   = !!settings.kidMode;
+    const kidMode   = !!settings.kidMode && showRideFilters;
     const childHeight = Number.isFinite(settings.childHeight) ? settings.childHeight : 102;
     const favs = new Set(Storage.get('favorites', []));
     const exp  = new Set(Storage.get('experienced', []));
 
-    const parkList = DataStore.attractions().filter(a => a.park === currentParkTab);
+    const parkList = DataStore.attractions().filter(
+      a => a.park === currentParkTab && (a.category || 'ride') === currentCategoryTab
+    );
     let list = parkList;
     if (kidMode)  list = list.filter(a => a.fearLevel < 4);
     if (heightOk) list = list.filter(a => !a.heightLimit || a.heightLimit <= childHeight);
@@ -590,7 +605,11 @@ const App = (() => {
     if (favOnly)  list = list.filter(a => favs.has(a.id));
     if (unridden) list = list.filter(a => !exp.has(a.id));
     if (openOnly) list = list.filter(a => !a.closed);
-    list.sort((a, b) => (b.mustRide - a.mustRide) || (a.fearLevel - b.fearLevel));
+    if (showRideFilters) {
+      list.sort((a, b) => (b.mustRide - a.mustRide) || (a.fearLevel - b.fearLevel));
+    } else {
+      list.sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+    }
 
     const hiddenByKid = kidMode ? parkList.filter(a => a.fearLevel >= 4).length : 0;
     const banner = kidMode ? `
@@ -600,8 +619,9 @@ const App = (() => {
       </div>` : '';
 
     const root = document.getElementById('attractions-content');
+    const catLabels = { ride: '乗物', restaurant: 'レストラン', food: 'フード', show: 'ショー', shop: 'ショップ' };
     if (!list.length) {
-      root.innerHTML = banner + '<div class="empty">該当するアトラクションがありません</div>';
+      root.innerHTML = banner + `<div class="empty">${catLabels[currentCategoryTab] || '項目'}が見つかりません</div>`;
     } else {
       root.innerHTML = banner + `<div class="attr-grid">
         ${list.map(a => attractionCardHtml(a, favs.has(a.id), exp.has(a.id), childHeight)).join('')}
@@ -623,26 +643,37 @@ const App = (() => {
   }
 
   function attractionCardHtml(a, isFav, isExp, childHeight) {
+    const cat = a.category || 'ride';
+    const isRide = cat === 'ride';
     const dots = [1,2,3,4,5].map(n => `<span class="dot ${n <= a.fearLevel ? 'on' : ''}"></span>`).join('');
-    const emoji = parkEmoji(a);
+    const emoji = categoryEmoji(a);
     const overHeight = a.heightLimit && childHeight && a.heightLimit > childHeight;
     return `
-      <div class="attr-card l${a.fearLevel} ${a.closed ? 'closed' : ''}" data-id="${a.id}">
+      <div class="attr-card l${isRide ? a.fearLevel : 0} ${a.closed ? 'closed' : ''}" data-id="${a.id}">
         <div class="thumb">
           <img src="../${a.image}" alt="" loading="lazy" onerror="this.style.display='none'">
           <span>${emoji}</span>
         </div>
         <div class="body">
-          <div class="level">Lv ${a.fearLevel} ${dots}</div>
+          ${isRide ? `<div class="level">Lv ${a.fearLevel} ${dots}</div>` : `<div class="muted" style="font-size:11px;">${escape(a.area)}</div>`}
           <h4>${escape(a.name)}</h4>
           <div class="badges">
-            ${a.mustRide ? '<span class="badge must">必乗</span>' : ''}
+            ${isRide && a.mustRide ? '<span class="badge must">必乗</span>' : ''}
             ${isFav ? '<span class="badge fav">⭐</span>' : ''}
-            ${isExp ? '<span class="badge exp">✓</span>' : ''}
-            ${a.heightLimit ? `<span class="badge ${overHeight ? 'over' : ''}">${a.heightLimit}cm〜</span>` : ''}
+            ${isRide && isExp ? '<span class="badge exp">✓</span>' : ''}
+            ${isRide && a.heightLimit ? `<span class="badge ${overHeight ? 'over' : ''}">${a.heightLimit}cm〜</span>` : ''}
           </div>
         </div>
       </div>`;
+  }
+
+  function categoryEmoji(a) {
+    const cat = a.category || 'ride';
+    if (cat === 'restaurant') return '🍽️';
+    if (cat === 'food')       return '🍿';
+    if (cat === 'show')       return '🎪';
+    if (cat === 'shop')       return '🛍️';
+    return parkEmoji(a);
   }
 
   function showAttractionDetail(id) {
@@ -715,13 +746,20 @@ const App = (() => {
         TripMap.setView(b.dataset.mapview);
       };
     });
-    document.querySelectorAll('[data-action]').forEach(b => {
-      if (b.dataset.action === 'locate') b.onclick = () => TripMap.locate();
-      if (b.dataset.action === 'fit')    b.onclick = () => TripMap.fitAll();
+    document.querySelectorAll('.map-chip').forEach(b => {
+      b.classList.toggle('active', b.dataset.mapcat === currentMapCategory);
+      b.onclick = () => {
+        currentMapCategory = b.dataset.mapcat;
+        document.querySelectorAll('.map-chip').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        TripMap.setCategory(currentMapCategory);
+      };
     });
+    const fitBtn = document.querySelector('[data-action="map-fit"]');
+    if (fitBtn) fitBtn.onclick = () => TripMap.fitAll();
     TripMap.init('map');
+    TripMap.setCategory(currentMapCategory);
     TripMap.invalidate();
-    TripMap.refreshMarkers();
   }
 
   // ---------- Checklist ----------

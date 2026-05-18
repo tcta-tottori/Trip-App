@@ -4,6 +4,7 @@ const TripMap = (() => {
   let markers = [];
   let userMarker = null;
   let currentView = 'land';
+  let currentCategory = 'ride';
   let containerEl = 'map';
 
   // Real-world coordinates fallback (used for sea + urayasu)
@@ -17,8 +18,8 @@ const TripMap = (() => {
   const PARK_MAPS = {
     land: {
       image: '../images/parks/tdl-map.jpg',
-      width: 1400,
-      height: 1224
+      width: 1600,
+      height: 1131
     },
     sea: {
       image: '../images/parks/tds-map.jpg',
@@ -64,16 +65,31 @@ const TripMap = (() => {
     map = L.map(containerEl, {
       crs: L.CRS.Simple,
       zoomControl: true,
-      minZoom: -2,
+      minZoom: -5,
       maxZoom: 2,
       attributionControl: false
     });
     const bounds = [[0, 0], [cfg.height, cfg.width]];
     L.imageOverlay(cfg.image, bounds).addTo(map);
-    map.fitBounds(bounds);
+
+    // Initial view: fill container width so the map feels full-screen on
+    // mobile; the user can pan vertically to see top/bottom legends.
+    // If the container is wider than the image aspect, fall back to
+    // fitBounds so the full image is shown without horizontal letterboxing.
+    const container = map.getContainer();
+    const cw = container.clientWidth || 360;
+    const ch = container.clientHeight || 600;
+    const containerAspect = cw / ch;
+    const imageAspect = cfg.width / cfg.height;
+    if (containerAspect < imageAspect) {
+      const zoomToFitWidth = Math.log2(cw / cfg.width);
+      map.setView([cfg.height / 2, cfg.width / 2], zoomToFitWidth);
+    } else {
+      map.fitBounds(bounds);
+    }
     map.setMaxBounds([
-      [-cfg.height * 0.1, -cfg.width * 0.1],
-      [cfg.height * 1.1, cfg.width * 1.1]
+      [-cfg.height * 0.15, -cfg.width * 0.15],
+      [cfg.height * 1.15, cfg.width * 1.15]
     ]);
   }
 
@@ -104,6 +120,24 @@ const TripMap = (() => {
     return [(1 - my) * cfg.height, mx * cfg.width];
   }
 
+  function setCategory(cat) {
+    currentCategory = cat;
+    refreshMarkers();
+  }
+
+  function categoryEmoji(cat) {
+    return ({
+      ride: '🎢', restaurant: '🍽️', food: '🍿', show: '🎪', shop: '🛍️'
+    })[cat] || '📍';
+  }
+
+  function categoryColorClass(cat) {
+    return ({
+      restaurant: 'pin-restaurant', food: 'pin-food',
+      show: 'pin-show', shop: 'pin-shop'
+    })[cat] || '';
+  }
+
   function refreshMarkers() {
     if (!map) return;
     clearMarkers();
@@ -124,7 +158,10 @@ const TripMap = (() => {
     }
     const park = currentView;
     const cfg = PARK_MAPS[park];
-    const list = DataStore.attractions().filter(a => a.park === park && !a.closed);
+    const list = DataStore.attractions().filter(a => {
+      if (a.park !== park || a.closed) return false;
+      return (a.category || 'ride') === currentCategory;
+    });
     list.forEach(a => {
       let latLng;
       if (cfg && a.mapX != null && a.mapY != null) {
@@ -134,18 +171,23 @@ const TripMap = (() => {
       } else {
         return;
       }
+      const cat = a.category || 'ride';
       const isFav = favs.has(a.id);
-      const cls = pinClass(a.fearLevel);
+      const cls = cat === 'ride' ? pinClass(a.fearLevel) : categoryColorClass(cat);
+      const glyph = isFav ? '⭐' : categoryEmoji(cat);
       const icon = L.divIcon({
-        html: `<div class="pin ${cls}${isFav ? ' fav' : ''}">${isFav ? '⭐' : '🎢'}</div>`,
+        html: `<div class="pin ${cls}${isFav ? ' fav' : ''}">${glyph}</div>`,
         className: 'custom-pin',
         iconSize: [32, 32],
         iconAnchor: [16, 16]
       });
       const m = L.marker(latLng, { icon }).addTo(map);
+      const subtitle = cat === 'ride'
+        ? `${a.area} ・ 怖さ Lv${a.fearLevel}`
+        : a.area;
       m.bindPopup(`
         <strong>${a.name}</strong><br>
-        <small>${a.area} ・ 怖さ Lv${a.fearLevel}</small><br>
+        <small>${subtitle}</small><br>
         <button class="btn small" onclick="App.showAttractionDetail('${a.id}')">詳細を見る</button>
       `);
       markers.push(m);
@@ -185,5 +227,5 @@ const TripMap = (() => {
 
   function invalidate() { if (map) setTimeout(() => map.invalidateSize(), 50); }
 
-  return { init, setView, refreshMarkers, locate, fitAll, invalidate };
+  return { init, setView, setCategory, refreshMarkers, locate, fitAll, invalidate };
 })();

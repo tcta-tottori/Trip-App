@@ -42,10 +42,17 @@
 
   <!-- Attractions -->
   <section class="screen" id="screen-attractions" data-screen="attractions" hidden>
-    <header class="topbar"><h1>🎢 アトラクション</h1></header>
+    <header class="topbar"><h1>🎢 パーク施設</h1></header>
     <div class="park-tabs">
       <button class="park-tab active" data-park="land">🏰 ランド</button>
       <button class="park-tab" data-park="sea">🌊 シー</button>
+    </div>
+    <div class="category-tabs" id="category-tabs">
+      <button class="cat-tab active" data-cat="ride">🎢 乗物</button>
+      <button class="cat-tab" data-cat="restaurant">🍽️ レストラン</button>
+      <button class="cat-tab" data-cat="food">🍿 フード</button>
+      <button class="cat-tab" data-cat="show">🎪 ショー</button>
+      <button class="cat-tab" data-cat="shop">🛍️ ショップ</button>
     </div>
     <div class="filters" id="attraction-filters">
       <label class="chip"><input type="checkbox" id="f-safe" checked> 安心のみ（〜Lv2）</label>
@@ -59,17 +66,23 @@
 
   <!-- Map -->
   <section class="screen" id="screen-map" data-screen="map" hidden>
-    <header class="topbar"><h1>🗺️ 地図</h1></header>
+    <header class="topbar">
+      <h1>🗺️ 地図</h1>
+      <button class="icon-btn" data-action="map-fit" aria-label="全表示">⤢</button>
+    </header>
     <div class="map-tabs">
       <button class="map-tab active" data-mapview="land">ランド</button>
       <button class="map-tab" data-mapview="sea">シー</button>
       <button class="map-tab" data-mapview="urayasu">浦安エリア</button>
     </div>
-    <div id="map"></div>
-    <div class="map-actions">
-      <button class="btn small" data-action="locate">📍 現在地</button>
-      <button class="btn small" data-action="fit">全表示</button>
+    <div class="map-cat-chips" id="map-cat-chips">
+      <button class="map-chip active" data-mapcat="ride">🎢 乗物</button>
+      <button class="map-chip" data-mapcat="restaurant">🍽️ レストラン</button>
+      <button class="map-chip" data-mapcat="food">🍿 フード</button>
+      <button class="map-chip" data-mapcat="show">🎪 ショー</button>
+      <button class="map-chip" data-mapcat="shop">🛍️ ショップ</button>
     </div>
+    <div id="map"></div>
   </section>
 
   <!-- Checklist -->

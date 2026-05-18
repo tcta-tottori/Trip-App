@@ -526,13 +526,37 @@ h1, h2, h3 { font-family: 'Shippori Mincho', serif; letter-spacing: 0.02em; }
 
 #map {
   width: 100%;
-  height: calc(100vh - 49px - 56px - var(--tab-h) - var(--safe-bottom) - 56px);
+  height: calc(100vh - 49px - 56px - 44px - var(--tab-h) - var(--safe-bottom));
   min-height: 360px;
+  background: var(--paper);
 }
-.map-actions {
-  display: flex; gap: 8px; padding: 12px 16px;
-  background: var(--paper); border-top: 1px solid var(--line);
+.map-cat-chips {
+  display: flex; gap: 6px; padding: 6px 12px;
+  background: var(--paper); border-bottom: 1px solid var(--line);
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
 }
+.map-chip {
+  flex: 0 0 auto;
+  background: var(--card); border: 1px solid var(--line);
+  padding: 6px 12px; border-radius: 18px;
+  font-family: inherit; font-size: 12px; cursor: pointer; color: var(--ink);
+}
+.map-chip.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+.category-tabs {
+  display: flex; gap: 6px; padding: 8px 12px;
+  background: var(--paper); border-bottom: 1px solid var(--line);
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+}
+.cat-tab {
+  flex: 0 0 auto;
+  background: var(--card); border: 1px solid var(--line);
+  padding: 8px 14px; border-radius: 20px;
+  font-family: inherit; font-size: 13px; cursor: pointer; color: var(--ink);
+}
+.cat-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
 
 .custom-pin {
   background: none; border: none;
@@ -548,6 +572,10 @@ h1, h2, h3 { font-family: 'Shippori Mincho', serif; letter-spacing: 0.02em; }
 .pin.orange { border-color: var(--warn); }
 .pin.red { border-color: var(--rouge); }
 .pin.fav { box-shadow: 0 0 0 4px rgba(125, 211, 232, 0.5), 0 2px 6px rgba(0,0,0,0.3); }
+.pin.pin-restaurant { border-color: #d96450; }
+.pin.pin-food       { border-color: #e8a85b; }
+.pin.pin-show       { border-color: #9d6cd8; }
+.pin.pin-shop       { border-color: #5fa1c7; }
 
 .user-pin {
   width: 18px; height: 18px; border-radius: 50%;

@@ -17,9 +17,10 @@
       "tips": "期間限定でグルートも登場！",
       "lat": 35.6334,
       "lng": 139.8819,
-      "mapX": 0.51,
+      "mapX": 0.42,
       "mapY": 0.14,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A4%E3%83%83%E3%83%84%E3%83%BB%E3%82%A2%E3%83%BB%E3%82%B9%E3%83%A2%E3%83%BC%E3%83%AB%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A4%E3%83%83%E3%83%84%E3%83%BB%E3%82%A2%E3%83%BB%E3%82%B9%E3%83%A2%E3%83%BC%E3%83%AB%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89",
+      "category": "ride"
     },
     {
       "id": "jungle-cruise",
@@ -38,8 +39,9 @@
       "lat": 35.6324,
       "lng": 139.8794,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B8%E3%83%A3%E3%83%B3%E3%82%B0%E3%83%AB%E3%82%AF%E3%83%AB%E3%83%BC%E3%82%BA%EF%BC%9A%E3%83%AF%E3%82%A4%E3%83%AB%E3%83%89%E3%83%A9%E3%82%A4%E3%83%95%E3%83%BB%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%9A%E3%83%87%E3%82%A3%E3%82%B7%E3%83%A7%E3%83%B3",
-      "mapX": 0.42,
-      "mapY": 0.5
+      "mapX": 0.4,
+      "mapY": 0.36,
+      "category": "ride"
     },
     {
       "id": "mark-twain",
@@ -58,8 +60,9 @@
       "lat": 35.6336,
       "lng": 139.8801,
       "url": "https://search.tokyodisneyresort.jp/?q=%E8%92%B8%E6%B0%97%E8%88%B9%E3%83%9E%E3%83%BC%E3%82%AF%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A4%E3%83%B3%E5%8F%B7",
-      "mapX": 0.25,
-      "mapY": 0.18
+      "mapX": 0.27,
+      "mapY": 0.24,
+      "category": "ride"
     },
     {
       "id": "tea-party",
@@ -79,8 +82,9 @@
       "lat": 35.6336,
       "lng": 139.8821,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A2%E3%83%AA%E3%82%B9%E3%81%AE%E3%83%86%E3%82%A3%E3%83%BC%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC",
-      "mapX": 0.66,
-      "mapY": 0.25
+      "mapX": 0.51,
+      "mapY": 0.18,
+      "category": "ride"
     },
     {
       "id": "carrousel",
@@ -99,8 +103,9 @@
       "lat": 35.6339,
       "lng": 139.8814,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E3%82%AB%E3%83%AB%E3%83%BC%E3%82%BB%E3%83%AB",
-      "mapX": 0.58,
-      "mapY": 0.32
+      "mapX": 0.47,
+      "mapY": 0.28,
+      "category": "ride"
     },
     {
       "id": "tom-sawyer",
@@ -119,8 +124,9 @@
       "lat": 35.634,
       "lng": 139.88,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%88%E3%83%A0%E3%82%BD%E3%83%BC%E3%83%A4%E5%B3%B6%E3%81%84%E3%81%8B%E3%81%A0",
-      "mapX": 0.32,
-      "mapY": 0.2
+      "mapX": 0.3,
+      "mapY": 0.21,
+      "category": "ride"
     },
     {
       "id": "western-river",
@@ -139,8 +145,9 @@
       "lat": 35.6328,
       "lng": 139.8807,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A6%E3%82%A8%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%AA%E3%83%90%E3%83%BC%E9%89%84%E9%81%93",
-      "mapX": 0.3,
-      "mapY": 0.42
+      "mapX": 0.28,
+      "mapY": 0.34,
+      "category": "ride"
     },
     {
       "id": "roger-rabbit",
@@ -159,8 +166,9 @@
       "lat": 35.6354,
       "lng": 139.8814,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%AD%E3%82%B8%E3%83%A3%E3%83%BC%E3%83%A9%E3%83%93%E3%83%83%E3%83%88%E3%81%AE%E3%82%AB%E3%83%BC%E3%83%88%E3%82%A5%E3%83%BC%E3%83%B3%E3%82%B9%E3%83%94%E3%83%B3",
-      "mapX": 0.92,
-      "mapY": 0.22
+      "mapX": 0.64,
+      "mapY": 0.2,
+      "category": "ride"
     },
     {
       "id": "pooh",
@@ -179,8 +187,9 @@
       "lat": 35.6346,
       "lng": 139.8821,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%97%E3%83%BC%E3%81%95%E3%82%93%E3%81%AE%E3%83%8F%E3%83%8B%E3%83%BC%E3%83%8F%E3%83%B3%E3%83%88",
-      "mapX": 0.66,
-      "mapY": 0.22
+      "mapX": 0.51,
+      "mapY": 0.22,
+      "category": "ride"
     },
     {
       "id": "beauty-beast",
@@ -200,8 +209,9 @@
       "lat": 35.6349,
       "lng": 139.8826,
       "url": "https://search.tokyodisneyresort.jp/?q=%E7%BE%8E%E5%A5%B3%E3%81%A8%E9%87%8E%E7%8D%A3%20%E2%80%9C%E9%AD%94%E6%B3%95%E3%81%AE%E3%82%82%E3%81%AE%E3%81%8C%E3%81%9F%E3%82%8A%E2%80%9D",
-      "mapX": 0.82,
-      "mapY": 0.17
+      "mapX": 0.54,
+      "mapY": 0.16,
+      "category": "ride"
     },
     {
       "id": "buzz",
@@ -220,8 +230,9 @@
       "lat": 35.6332,
       "lng": 139.8829,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%90%E3%82%BA%E3%83%BB%E3%83%A9%E3%82%A4%E3%83%88%E3%82%A4%E3%83%A4%E3%83%BC%E3%81%AE%E3%82%A2%E3%82%B9%E3%83%88%E3%83%AD%E3%83%96%E3%83%A9%E3%82%B9%E3%82%BF%E3%83%BC",
-      "mapX": 0.74,
-      "mapY": 0.42
+      "mapX": 0.6,
+      "mapY": 0.36,
+      "category": "ride"
     },
     {
       "id": "baymax",
@@ -240,8 +251,9 @@
       "lat": 35.6328,
       "lng": 139.883,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%99%E3%82%A4%E3%83%9E%E3%83%83%E3%82%AF%E3%82%B9%E3%81%AE%E3%83%8F%E3%83%83%E3%83%94%E3%83%BC%E3%83%A9%E3%82%A4%E3%83%89",
-      "mapX": 0.71,
-      "mapY": 0.46
+      "mapX": 0.61,
+      "mapY": 0.42,
+      "category": "ride"
     },
     {
       "id": "monsters-inc",
@@ -261,8 +273,9 @@
       "lat": 35.6326,
       "lng": 139.8828,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%A2%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%BC%E3%82%BA%E3%83%BB%E3%82%A4%E3%83%B3%E3%82%AF%20%E2%80%9C%E3%83%A9%E3%82%A4%E3%83%89%26%E3%82%B4%E3%83%BC%E3%82%B7%E3%83%BC%E3%82%AF%EF%BC%81%E2%80%9D",
-      "mapX": 0.65,
-      "mapY": 0.42
+      "mapX": 0.58,
+      "mapY": 0.32,
+      "category": "ride"
     },
     {
       "id": "peter-pan",
@@ -281,8 +294,9 @@
       "lat": 35.6342,
       "lng": 139.8816,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%94%E3%83%BC%E3%82%BF%E3%83%BC%E3%83%91%E3%83%B3%E7%A9%BA%E3%81%AE%E6%97%85",
-      "mapX": 0.6,
-      "mapY": 0.22
+      "mapX": 0.46,
+      "mapY": 0.2,
+      "category": "ride"
     },
     {
       "id": "snow-white",
@@ -302,8 +316,9 @@
       "lat": 35.6342,
       "lng": 139.8819,
       "url": "https://search.tokyodisneyresort.jp/?q=%E7%99%BD%E9%9B%AA%E5%A7%AB%E3%81%A8%E4%B8%83%E4%BA%BA%E3%81%AE%E3%81%93%E3%81%B3%E3%81%A8",
-      "mapX": 0.55,
-      "mapY": 0.28
+      "mapX": 0.42,
+      "mapY": 0.22,
+      "category": "ride"
     },
     {
       "id": "haunted-mansion",
@@ -322,8 +337,9 @@
       "lat": 35.6346,
       "lng": 139.8806,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%9B%E3%83%BC%E3%83%B3%E3%83%86%E3%83%83%E3%83%89%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3",
-      "mapX": 0.5,
-      "mapY": 0.16
+      "mapX": 0.4,
+      "mapY": 0.16,
+      "category": "ride"
     },
     {
       "id": "space-mountain",
@@ -343,8 +359,9 @@
       "lat": 35.6326,
       "lng": 139.8832,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E3%83%BB%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%86%E3%83%B3",
-      "mapX": 0.68,
-      "mapY": 0.52
+      "mapX": 0.65,
+      "mapY": 0.4,
+      "category": "ride"
     },
     {
       "id": "star-tours",
@@ -363,8 +380,9 @@
       "lat": 35.633,
       "lng": 139.8835,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%BB%E3%83%84%E3%82%A2%E3%83%BC%E3%82%BA%EF%BC%9A%E3%82%B6%E3%83%BB%E3%82%A2%E3%83%89%E3%83%99%E3%83%B3%E3%83%81%E3%83%A3%E3%83%BC%E3%82%BA%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%86%E3%82%A3%E3%83%8B%E3%83%A5%E3%83%BC",
-      "mapX": 0.72,
-      "mapY": 0.48
+      "mapX": 0.62,
+      "mapY": 0.38,
+      "category": "ride"
     },
     {
       "id": "splash-mountain",
@@ -384,7 +402,8 @@
       "lng": 139.8794,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B9%E3%83%97%E3%83%A9%E3%83%83%E3%82%B7%E3%83%A5%E3%83%BB%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%86%E3%83%B3",
       "mapX": 0.32,
-      "mapY": 0.13
+      "mapY": 0.14,
+      "category": "ride"
     },
     {
       "id": "mermaid-lagoon",
@@ -404,7 +423,8 @@
       "lng": 139.8842,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%9E%E3%83%BC%E3%83%A1%E3%82%A4%E3%83%89%E3%83%A9%E3%82%B0%E3%83%BC%E3%83%B3%EF%BC%88%E5%B1%8B%E5%86%85%E5%85%A8%E4%BD%93%EF%BC%89",
       "mapX": 0.47,
-      "mapY": 0.3
+      "mapY": 0.3,
+      "category": "ride"
     },
     {
       "id": "jellyfish",
@@ -424,7 +444,8 @@
       "lng": 139.8842,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%94%E3%83%B3%E3%83%BB%E3%82%B8%E3%82%A7%E3%83%AA%E3%83%BC%E3%83%95%E3%82%A3%E3%83%83%E3%82%B7%E3%83%A5",
       "mapX": 0.49,
-      "mapY": 0.33
+      "mapY": 0.33,
+      "category": "ride"
     },
     {
       "id": "blowfish",
@@ -444,7 +465,8 @@
       "lng": 139.8843,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%96%E3%83%AD%E3%83%BC%E3%83%95%E3%82%A3%E3%83%83%E3%82%B7%E3%83%A5%E3%83%BB%E3%83%90%E3%83%AB%E3%83%BC%E3%83%B3%E3%83%AC%E3%83%BC%E3%82%B9",
       "mapX": 0.47,
-      "mapY": 0.33
+      "mapY": 0.33,
+      "category": "ride"
     },
     {
       "id": "ariel-playground",
@@ -464,7 +486,8 @@
       "lng": 139.8843,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A2%E3%83%AA%E3%82%A8%E3%83%AB%E3%81%AE%E3%83%97%E3%83%AC%E3%82%A4%E3%82%B0%E3%83%A9%E3%82%A6%E3%83%B3%E3%83%89",
       "mapX": 0.45,
-      "mapY": 0.31
+      "mapY": 0.31,
+      "category": "ride"
     },
     {
       "id": "jasmine-carpet",
@@ -484,7 +507,8 @@
       "lng": 139.8847,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B8%E3%83%A3%E3%82%B9%E3%83%9F%E3%83%B3%E3%81%AE%E3%83%95%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B0%E3%82%AB%E3%83%BC%E3%83%9A%E3%83%83%E3%83%88",
       "mapX": 0.54,
-      "mapY": 0.3
+      "mapY": 0.3,
+      "category": "ride"
     },
     {
       "id": "gondola",
@@ -505,7 +529,8 @@
       "lng": 139.8848,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%B4%E3%82%A7%E3%83%8D%E3%83%84%E3%82%A3%E3%82%A2%E3%83%B3%E3%83%BB%E3%82%B4%E3%83%B3%E3%83%89%E3%83%A9",
       "mapX": 0.36,
-      "mapY": 0.48
+      "mapY": 0.48,
+      "category": "ride"
     },
     {
       "id": "big-city",
@@ -525,7 +550,8 @@
       "lng": 139.8842,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%93%E3%83%83%E3%82%B0%E3%82%B7%E3%83%86%E3%82%A3%E3%83%BB%E3%83%B4%E3%82%A3%E3%83%BC%E3%82%AF%E3%83%AB",
       "mapX": 0.26,
-      "mapY": 0.38
+      "mapY": 0.38,
+      "category": "ride"
     },
     {
       "id": "transit-steamer",
@@ -545,7 +571,8 @@
       "lng": 139.8842,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%87%E3%82%A3%E3%82%BA%E3%83%8B%E3%83%BC%E3%82%B7%E3%83%BC%E3%83%BB%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B8%E3%83%83%E3%83%88%E3%82%B9%E3%83%81%E3%83%BC%E3%83%9E%E3%83%BC%E3%83%A9%E3%82%A4%E3%83%B3",
       "mapX": 0.38,
-      "mapY": 0.45
+      "mapY": 0.45,
+      "category": "ride"
     },
     {
       "id": "toy-story-mania",
@@ -565,7 +592,8 @@
       "lng": 139.8835,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%88%E3%82%A4%E3%83%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AA%E3%83%BC%E3%83%BB%E3%83%9E%E3%83%8B%E3%82%A2%EF%BC%81",
       "mapX": 0.22,
-      "mapY": 0.42
+      "mapY": 0.42,
+      "category": "ride"
     },
     {
       "id": "rapunzel",
@@ -586,7 +614,8 @@
       "lng": 139.8847,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%A9%E3%83%97%E3%83%B3%E3%83%84%E3%82%A7%E3%83%AB%E3%81%AE%E3%83%A9%E3%83%B3%E3%82%BF%E3%83%B3%E3%83%95%E3%82%A7%E3%82%B9%E3%83%86%E3%82%A3%E3%83%90%E3%83%AB",
       "mapX": 0.59,
-      "mapY": 0.14
+      "mapY": 0.14,
+      "category": "ride"
     },
     {
       "id": "frozen-journey",
@@ -606,7 +635,8 @@
       "lng": 139.8848,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A2%E3%83%8A%E3%81%A8%E3%82%A8%E3%83%AB%E3%82%B5%E3%81%AE%E3%83%95%E3%83%AD%E3%83%BC%E3%82%BA%E3%83%B3%E3%82%B8%E3%83%A3%E3%83%BC%E3%83%8B%E3%83%BC",
       "mapX": 0.61,
-      "mapY": 0.1
+      "mapY": 0.1,
+      "category": "ride"
     },
     {
       "id": "sindbad",
@@ -626,7 +656,8 @@
       "lng": 139.8847,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B7%E3%83%B3%E3%83%89%E3%83%90%E3%83%83%E3%83%89%E3%83%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AA%E3%83%BC%E3%83%96%E3%83%83%E3%82%AF%E3%83%BB%E3%83%B4%E3%82%A9%E3%83%A4%E3%83%83%E3%82%B8",
       "mapX": 0.52,
-      "mapY": 0.32
+      "mapY": 0.32,
+      "category": "ride"
     },
     {
       "id": "nemo",
@@ -646,7 +677,8 @@
       "lng": 139.8854,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%8B%E3%83%A2%26%E3%83%95%E3%83%AC%E3%83%B3%E3%82%BA%E3%83%BB%E3%82%B7%E3%83%BC%E3%83%A9%E3%82%A4%E3%83%80%E3%83%BC",
       "mapX": 0.32,
-      "mapY": 0.22
+      "mapY": 0.22,
+      "category": "ride"
     },
     {
       "id": "tower-terror",
@@ -666,7 +698,8 @@
       "lng": 139.8841,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%BF%E3%83%AF%E3%83%BC%E3%83%BB%E3%82%AA%E3%83%96%E3%83%BB%E3%83%86%E3%83%A9%E3%83%BC",
       "mapX": 0.24,
-      "mapY": 0.32
+      "mapY": 0.32,
+      "category": "ride"
     },
     {
       "id": "soaring",
@@ -686,7 +719,8 @@
       "lng": 139.8851,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%BD%E3%82%A2%E3%83%AA%E3%83%B3%EF%BC%9A%E3%83%95%E3%82%A1%E3%83%B3%E3%82%BF%E3%82%B9%E3%83%86%E3%82%A3%E3%83%83%E3%82%AF%E3%83%BB%E3%83%95%E3%83%A9%E3%82%A4%E3%83%88",
       "mapX": 0.34,
-      "mapY": 0.5
+      "mapY": 0.5,
+      "category": "ride"
     },
     {
       "id": "peter-pan-neverland",
@@ -706,7 +740,407 @@
       "lng": 139.8849,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%94%E3%83%BC%E3%82%BF%E3%83%BC%E3%83%91%E3%83%B3%E3%81%AE%E3%83%8D%E3%83%90%E3%83%BC%E3%83%A9%E3%83%B3%E3%83%89%E3%82%A2%E3%83%89%E3%83%99%E3%83%B3%E3%83%81%E3%83%A3%E3%83%BC",
       "mapX": 0.63,
-      "mapY": 0.16
+      "mapY": 0.16,
+      "category": "ride"
+    },
+    {
+      "id": "queen-of-hearts",
+      "name": "クイーン・オブ・ハートのバンケットホール",
+      "park": "land",
+      "area": "ファンタジーランド",
+      "category": "restaurant",
+      "description": "美女と野獣エリアにあるテーブルサービス（カートでセルフ）。",
+      "mapX": 0.49,
+      "mapY": 0.18,
+      "image": "images/attractions/queen-of-hearts.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/restaurant/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "hungry-bear",
+      "name": "ハングリーベア・レストラン",
+      "park": "land",
+      "area": "ウエスタンランド",
+      "category": "restaurant",
+      "description": "カレーが定番のカウンターサービス。",
+      "mapX": 0.3,
+      "mapY": 0.28,
+      "image": "images/attractions/hungry-bear.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/restaurant/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "plazapavilion",
+      "name": "プラザパビリオン・レストラン",
+      "park": "land",
+      "area": "ワールドバザール",
+      "category": "restaurant",
+      "description": "パスタやハンバーグなどファミリー向け。",
+      "mapX": 0.44,
+      "mapY": 0.35,
+      "image": "images/attractions/plazapavilion.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/restaurant/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "crystal-palace",
+      "name": "クリスタルパレス・レストラン",
+      "park": "land",
+      "area": "ワールドバザール",
+      "category": "restaurant",
+      "description": "ビュッフェスタイル。キャラクターグリーティングなし。",
+      "mapX": 0.46,
+      "mapY": 0.38,
+      "image": "images/attractions/crystal-palace.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/restaurant/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "popcorn-tdl",
+      "name": "ポップコーンワゴン",
+      "park": "land",
+      "area": "パーク内各所",
+      "category": "food",
+      "description": "フレーバーは場所ごとに異なる。",
+      "mapX": 0.42,
+      "mapY": 0.28,
+      "image": "images/attractions/popcorn.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/food/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "churro-tdl",
+      "name": "チュロスワゴン",
+      "park": "land",
+      "area": "ファンタジーランド",
+      "category": "food",
+      "description": "歩き食べに最適なチュロス。",
+      "mapX": 0.47,
+      "mapY": 0.25,
+      "image": "images/attractions/churros.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/food/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "icecream-tdl",
+      "name": "アイスクリームコーン",
+      "park": "land",
+      "area": "ワールドバザール",
+      "category": "food",
+      "description": "ソフトクリーム・アイス各種。",
+      "mapX": 0.45,
+      "mapY": 0.4,
+      "image": "images/attractions/icecream.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/food/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "musical-world",
+      "name": "ミッキーのマジカルミュージックワールド",
+      "park": "land",
+      "area": "ファンタジーランド",
+      "category": "show",
+      "description": "ファンタジーランド・フォレストシアターの音楽ショー。",
+      "mapX": 0.41,
+      "mapY": 0.12,
+      "image": "images/attractions/musical-world.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/entertainment/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "parade-day",
+      "name": "ディズニー・ハーモニー・イン・カラー",
+      "park": "land",
+      "area": "パレードルート",
+      "category": "show",
+      "description": "昼のパレード。シンデレラ城前広場が観賞ポイント。",
+      "mapX": 0.5,
+      "mapY": 0.38,
+      "image": "images/attractions/parade-day.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/entertainment/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "nightfall",
+      "name": "エレクトリカルパレード・ドリームライツ",
+      "park": "land",
+      "area": "パレードルート",
+      "category": "show",
+      "description": "夜の電飾パレード。19時頃スタート。",
+      "mapX": 0.5,
+      "mapY": 0.42,
+      "image": "images/attractions/nightfall.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/entertainment/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "world-bazaar",
+      "name": "ワールドバザール（メインショップ街）",
+      "park": "land",
+      "area": "ワールドバザール",
+      "category": "shop",
+      "description": "入園すぐの大規模ショッピング街。閉園後の最後にも◎",
+      "mapX": 0.46,
+      "mapY": 0.42,
+      "image": "images/attractions/world-bazaar.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/shop/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "grand-emporium",
+      "name": "グランドエンポーリアム",
+      "park": "land",
+      "area": "ワールドバザール",
+      "category": "shop",
+      "description": "園内最大級のグッズショップ。",
+      "mapX": 0.45,
+      "mapY": 0.43,
+      "image": "images/attractions/grand-emporium.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tdl/shop/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "horizon-bay",
+      "name": "ホライズンベイ・レストラン",
+      "park": "sea",
+      "area": "ポートディスカバリー",
+      "category": "restaurant",
+      "description": "ハンバーグやチキンのプレート。比較的空きやすい。",
+      "mapX": 0.32,
+      "mapY": 0.24,
+      "image": "images/attractions/horizon-bay.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tds/restaurant/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "mamma-biscotti",
+      "name": "マンマ・ビスコッティーズ・ベーカリー",
+      "park": "sea",
+      "area": "メディテレーニアンハーバー",
+      "category": "restaurant",
+      "description": "イタリアンパン・サンドイッチ。",
+      "mapX": 0.36,
+      "mapY": 0.46,
+      "image": "images/attractions/mamma-biscotti.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tds/restaurant/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "casbah-food",
+      "name": "カスバ・フードコート",
+      "park": "sea",
+      "area": "アラビアンコースト",
+      "category": "restaurant",
+      "description": "カレーやナンのカウンターサービス。",
+      "mapX": 0.55,
+      "mapY": 0.3,
+      "image": "images/attractions/casbah-food.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tds/restaurant/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "gyoza-dog",
+      "name": "ぎょうざドッグ",
+      "park": "sea",
+      "area": "ミステリアスアイランド",
+      "category": "food",
+      "description": "TDS名物。歩き食べに人気。",
+      "mapX": 0.4,
+      "mapY": 0.36,
+      "image": "images/attractions/gyoza-dog.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tds/food/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "chandu-tail",
+      "name": "チャンドゥ・テイル",
+      "park": "sea",
+      "area": "ロストリバーデルタ",
+      "category": "food",
+      "description": "あんが入ったタイ焼き風スナック。",
+      "mapX": 0.5,
+      "mapY": 0.22,
+      "image": "images/attractions/chandu-tail.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tds/food/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "popcorn-tds",
+      "name": "ポップコーンワゴン（シー）",
+      "park": "sea",
+      "area": "パーク内各所",
+      "category": "food",
+      "description": "TDS限定フレーバーが多数。",
+      "mapX": 0.42,
+      "mapY": 0.4,
+      "image": "images/attractions/popcorn-tds.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tds/food/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "harbor-show",
+      "name": "ハーバーショー",
+      "park": "sea",
+      "area": "メディテレーニアンハーバー",
+      "category": "show",
+      "description": "ハーバー上で繰り広げられる水上ショー。時間に注意。",
+      "mapX": 0.38,
+      "mapY": 0.42,
+      "image": "images/attractions/harbor-show.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tds/entertainment/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "bbb",
+      "name": "ビッグバンドビート",
+      "park": "sea",
+      "area": "アメリカンウォーターフロント",
+      "category": "show",
+      "description": "ブロードウェイ・ミュージックシアター。要抽選/事前予約。",
+      "mapX": 0.26,
+      "mapY": 0.36,
+      "image": "images/attractions/bbb.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tds/entertainment/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
+    },
+    {
+      "id": "emporio",
+      "name": "エンポーリオ",
+      "park": "sea",
+      "area": "メディテレーニアンハーバー",
+      "category": "shop",
+      "description": "TDS最大級のグッズショップ。閉園間際もアクセス◎",
+      "mapX": 0.34,
+      "mapY": 0.5,
+      "image": "images/attractions/emporio.jpg",
+      "url": "https://www.tokyodisneyresort.jp/tds/shop/list.html",
+      "fearLevel": 1,
+      "heightLimit": null,
+      "darkness": "明るい",
+      "duration": 0,
+      "kidFriendly": true,
+      "mustRide": false,
+      "closed": false
     }
   ]
 }
