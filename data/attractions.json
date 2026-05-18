@@ -17,6 +17,8 @@
       "tips": "期間限定でグルートも登場！",
       "lat": 35.6334,
       "lng": 139.8819,
+      "mapX": 0.51,
+      "mapY": 0.14,
       "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A4%E3%83%83%E3%83%84%E3%83%BB%E3%82%A2%E3%83%BB%E3%82%B9%E3%83%A2%E3%83%BC%E3%83%AB%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89"
     },
     {
@@ -35,7 +37,9 @@
       "description": "船長のジョークと共に世界の秘境をめぐる船旅。動物のロボットがリアル。",
       "lat": 35.6324,
       "lng": 139.8794,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B8%E3%83%A3%E3%83%B3%E3%82%B0%E3%83%AB%E3%82%AF%E3%83%AB%E3%83%BC%E3%82%BA%EF%BC%9A%E3%83%AF%E3%82%A4%E3%83%AB%E3%83%89%E3%83%A9%E3%82%A4%E3%83%95%E3%83%BB%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%9A%E3%83%87%E3%82%A3%E3%82%B7%E3%83%A7%E3%83%B3"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B8%E3%83%A3%E3%83%B3%E3%82%B0%E3%83%AB%E3%82%AF%E3%83%AB%E3%83%BC%E3%82%BA%EF%BC%9A%E3%83%AF%E3%82%A4%E3%83%AB%E3%83%89%E3%83%A9%E3%82%A4%E3%83%95%E3%83%BB%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%9A%E3%83%87%E3%82%A3%E3%82%B7%E3%83%A7%E3%83%B3",
+      "mapX": 0.4,
+      "mapY": 0.52
     },
     {
       "id": "mark-twain",
@@ -53,7 +57,9 @@
       "description": "アメリカ河を一周する大きな蒸気船。揺れも少なく休憩にも◎",
       "lat": 35.6336,
       "lng": 139.8801,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E8%92%B8%E6%B0%97%E8%88%B9%E3%83%9E%E3%83%BC%E3%82%AF%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A4%E3%83%B3%E5%8F%B7"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E8%92%B8%E6%B0%97%E8%88%B9%E3%83%9E%E3%83%BC%E3%82%AF%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A4%E3%83%B3%E5%8F%B7",
+      "mapX": 0.17,
+      "mapY": 0.34
     },
     {
       "id": "tea-party",
@@ -72,7 +78,9 @@
       "tips": "回しすぎ注意！",
       "lat": 35.6336,
       "lng": 139.8821,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A2%E3%83%AA%E3%82%B9%E3%81%AE%E3%83%86%E3%82%A3%E3%83%BC%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A2%E3%83%AA%E3%82%B9%E3%81%AE%E3%83%86%E3%82%A3%E3%83%BC%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%83%BC",
+      "mapX": 0.57,
+      "mapY": 0.27
     },
     {
       "id": "carrousel",
@@ -90,7 +98,9 @@
       "description": "シンデレラ城前のメリーゴーラウンド。",
       "lat": 35.6339,
       "lng": 139.8814,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E3%82%AB%E3%83%AB%E3%83%BC%E3%82%BB%E3%83%AB"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E3%82%AB%E3%83%AB%E3%83%BC%E3%82%BB%E3%83%AB",
+      "mapX": 0.51,
+      "mapY": 0.36
     },
     {
       "id": "tom-sawyer",
@@ -108,7 +118,9 @@
       "description": "いかだで島へ渡って探検。走り回れる開放空間。",
       "lat": 35.634,
       "lng": 139.88,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%88%E3%83%A0%E3%82%BD%E3%83%BC%E3%83%A4%E5%B3%B6%E3%81%84%E3%81%8B%E3%81%A0"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%88%E3%83%A0%E3%82%BD%E3%83%BC%E3%83%A4%E5%B3%B6%E3%81%84%E3%81%8B%E3%81%A0",
+      "mapX": 0.27,
+      "mapY": 0.3
     },
     {
       "id": "western-river",
@@ -126,7 +138,9 @@
       "description": "蒸気機関車でパークの外周を一周。恐竜エリアあり。",
       "lat": 35.6328,
       "lng": 139.8807,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A6%E3%82%A8%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%AA%E3%83%90%E3%83%BC%E9%89%84%E9%81%93"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%A6%E3%82%A8%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%AA%E3%83%90%E3%83%BC%E9%89%84%E9%81%93",
+      "mapX": 0.3,
+      "mapY": 0.45
     },
     {
       "id": "roger-rabbit",
@@ -144,7 +158,9 @@
       "description": "ハンドル操作でくるくる回るカートゥーンライド。",
       "lat": 35.6354,
       "lng": 139.8814,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%AD%E3%82%B8%E3%83%A3%E3%83%BC%E3%83%A9%E3%83%93%E3%83%83%E3%83%88%E3%81%AE%E3%82%AB%E3%83%BC%E3%83%88%E3%82%A5%E3%83%BC%E3%83%B3%E3%82%B9%E3%83%94%E3%83%B3"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%AD%E3%82%B8%E3%83%A3%E3%83%BC%E3%83%A9%E3%83%93%E3%83%83%E3%83%88%E3%81%AE%E3%82%AB%E3%83%BC%E3%83%88%E3%82%A5%E3%83%BC%E3%83%B3%E3%82%B9%E3%83%94%E3%83%B3",
+      "mapX": 0.81,
+      "mapY": 0.2
     },
     {
       "id": "pooh",
@@ -162,7 +178,9 @@
       "description": "はちみつのつぼに乗ってプーさんの世界へ。子どもに大人気。",
       "lat": 35.6346,
       "lng": 139.8821,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%97%E3%83%BC%E3%81%95%E3%82%93%E3%81%AE%E3%83%8F%E3%83%8B%E3%83%BC%E3%83%8F%E3%83%B3%E3%83%88"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%97%E3%83%BC%E3%81%95%E3%82%93%E3%81%AE%E3%83%8F%E3%83%8B%E3%83%BC%E3%83%8F%E3%83%B3%E3%83%88",
+      "mapX": 0.58,
+      "mapY": 0.22
     },
     {
       "id": "beauty-beast",
@@ -181,7 +199,9 @@
       "tips": "短時間だけ暗くなるシーンあり",
       "lat": 35.6349,
       "lng": 139.8826,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E7%BE%8E%E5%A5%B3%E3%81%A8%E9%87%8E%E7%8D%A3%20%E2%80%9C%E9%AD%94%E6%B3%95%E3%81%AE%E3%82%82%E3%81%AE%E3%81%8C%E3%81%9F%E3%82%8A%E2%80%9D"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E7%BE%8E%E5%A5%B3%E3%81%A8%E9%87%8E%E7%8D%A3%20%E2%80%9C%E9%AD%94%E6%B3%95%E3%81%AE%E3%82%82%E3%81%AE%E3%81%8C%E3%81%9F%E3%82%8A%E2%80%9D",
+      "mapX": 0.64,
+      "mapY": 0.22
     },
     {
       "id": "buzz",
@@ -199,7 +219,9 @@
       "description": "シューティング型ライド。標的を撃ちまくる。",
       "lat": 35.6332,
       "lng": 139.8829,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%90%E3%82%BA%E3%83%BB%E3%83%A9%E3%82%A4%E3%83%88%E3%82%A4%E3%83%A4%E3%83%BC%E3%81%AE%E3%82%A2%E3%82%B9%E3%83%88%E3%83%AD%E3%83%96%E3%83%A9%E3%82%B9%E3%82%BF%E3%83%BC"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%90%E3%82%BA%E3%83%BB%E3%83%A9%E3%82%A4%E3%83%88%E3%82%A4%E3%83%A4%E3%83%BC%E3%81%AE%E3%82%A2%E3%82%B9%E3%83%88%E3%83%AD%E3%83%96%E3%83%A9%E3%82%B9%E3%82%BF%E3%83%BC",
+      "mapX": 0.76,
+      "mapY": 0.42
     },
     {
       "id": "baymax",
@@ -217,7 +239,9 @@
       "description": "音楽に合わせてケアロボットが引っ張る。揺れは控えめ。",
       "lat": 35.6328,
       "lng": 139.883,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%99%E3%82%A4%E3%83%9E%E3%83%83%E3%82%AF%E3%82%B9%E3%81%AE%E3%83%8F%E3%83%83%E3%83%94%E3%83%BC%E3%83%A9%E3%82%A4%E3%83%89"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%99%E3%82%A4%E3%83%9E%E3%83%83%E3%82%AF%E3%82%B9%E3%81%AE%E3%83%8F%E3%83%83%E3%83%94%E3%83%BC%E3%83%A9%E3%82%A4%E3%83%89",
+      "mapX": 0.78,
+      "mapY": 0.46
     },
     {
       "id": "monsters-inc",
@@ -236,7 +260,9 @@
       "tips": "全体が暗いので暗さ苦手な子は注意",
       "lat": 35.6326,
       "lng": 139.8828,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%A2%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%BC%E3%82%BA%E3%83%BB%E3%82%A4%E3%83%B3%E3%82%AF%20%E2%80%9C%E3%83%A9%E3%82%A4%E3%83%89%26%E3%82%B4%E3%83%BC%E3%82%B7%E3%83%BC%E3%82%AF%EF%BC%81%E2%80%9D"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%A2%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%BC%E3%82%BA%E3%83%BB%E3%82%A4%E3%83%B3%E3%82%AF%20%E2%80%9C%E3%83%A9%E3%82%A4%E3%83%89%26%E3%82%B4%E3%83%BC%E3%82%B7%E3%83%BC%E3%82%AF%EF%BC%81%E2%80%9D",
+      "mapX": 0.84,
+      "mapY": 0.4
     },
     {
       "id": "peter-pan",
@@ -254,7 +280,9 @@
       "description": "空飛ぶ海賊船で夜空を旅する。基本暗め。",
       "lat": 35.6342,
       "lng": 139.8816,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%94%E3%83%BC%E3%82%BF%E3%83%BC%E3%83%91%E3%83%B3%E7%A9%BA%E3%81%AE%E6%97%85"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%94%E3%83%BC%E3%82%BF%E3%83%BC%E3%83%91%E3%83%B3%E7%A9%BA%E3%81%AE%E6%97%85",
+      "mapX": 0.46,
+      "mapY": 0.26
     },
     {
       "id": "snow-white",
@@ -273,7 +301,9 @@
       "tips": "4歳児は注意。怖がる子多い。",
       "lat": 35.6342,
       "lng": 139.8819,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E7%99%BD%E9%9B%AA%E5%A7%AB%E3%81%A8%E4%B8%83%E4%BA%BA%E3%81%AE%E3%81%93%E3%81%B3%E3%81%A8"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E7%99%BD%E9%9B%AA%E5%A7%AB%E3%81%A8%E4%B8%83%E4%BA%BA%E3%81%AE%E3%81%93%E3%81%B3%E3%81%A8",
+      "mapX": 0.43,
+      "mapY": 0.3
     },
     {
       "id": "haunted-mansion",
@@ -291,7 +321,9 @@
       "description": "本格お化け屋敷ライド。終始暗い。",
       "lat": 35.6346,
       "lng": 139.8806,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%9B%E3%83%BC%E3%83%B3%E3%83%86%E3%83%83%E3%83%89%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%83%9B%E3%83%BC%E3%83%B3%E3%83%86%E3%83%83%E3%83%89%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3",
+      "mapX": 0.3,
+      "mapY": 0.17
     },
     {
       "id": "space-mountain",
@@ -310,7 +342,9 @@
       "description": "暗闇の中の高速コースター。リニューアル中。",
       "lat": 35.6326,
       "lng": 139.8832,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E3%83%BB%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%86%E3%83%B3"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9%E3%83%BB%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%86%E3%83%B3",
+      "mapX": 0.76,
+      "mapY": 0.34
     },
     {
       "id": "star-tours",
@@ -328,7 +362,9 @@
       "description": "宇宙旅行の3Dシミュレーター。揺れ強い。",
       "lat": 35.633,
       "lng": 139.8835,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%BB%E3%83%84%E3%82%A2%E3%83%BC%E3%82%BA%EF%BC%9A%E3%82%B6%E3%83%BB%E3%82%A2%E3%83%89%E3%83%99%E3%83%B3%E3%83%81%E3%83%A3%E3%83%BC%E3%82%BA%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%86%E3%82%A3%E3%83%8B%E3%83%A5%E3%83%BC"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%BB%E3%83%84%E3%82%A2%E3%83%BC%E3%82%BA%EF%BC%9A%E3%82%B6%E3%83%BB%E3%82%A2%E3%83%89%E3%83%99%E3%83%B3%E3%83%81%E3%83%A3%E3%83%BC%E3%82%BA%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%86%E3%82%A3%E3%83%8B%E3%83%A5%E3%83%BC",
+      "mapX": 0.81,
+      "mapY": 0.42
     },
     {
       "id": "splash-mountain",
@@ -346,7 +382,9 @@
       "description": "16mの落下があるウォーターライド。怖さ強。",
       "lat": 35.6347,
       "lng": 139.8794,
-      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B9%E3%83%97%E3%83%A9%E3%83%83%E3%82%B7%E3%83%A5%E3%83%BB%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%86%E3%83%B3"
+      "url": "https://search.tokyodisneyresort.jp/?q=%E3%82%B9%E3%83%97%E3%83%A9%E3%83%83%E3%82%B7%E3%83%A5%E3%83%BB%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%86%E3%83%B3",
+      "mapX": 0.13,
+      "mapY": 0.15
     },
     {
       "id": "mermaid-lagoon",

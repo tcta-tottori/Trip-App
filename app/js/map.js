@@ -3,13 +3,23 @@ const TripMap = (() => {
   let map = null;
   let markers = [];
   let userMarker = null;
-  let watchId = null;
   let currentView = 'land';
+  let containerEl = 'map';
 
+  // Real-world coordinates fallback (used for sea + urayasu)
   const VIEWS = {
     land:    { center: [35.6336, 139.8810], zoom: 17, label: 'ディズニーランド' },
     sea:     { center: [35.6270, 139.8845], zoom: 17, label: 'ディズニーシー' },
     urayasu: { center: [35.6440, 139.8950], zoom: 13, label: '浦安エリア' }
+  };
+
+  // Image-based maps (CRS.Simple). width/height in image pixels.
+  const PARK_MAPS = {
+    land: {
+      image: '../images/parks/tdl-map.jpg',
+      width: 1400,
+      height: 1224
+    }
   };
 
   // Landmarks shown in addition to attractions
@@ -25,20 +35,51 @@ const TripMap = (() => {
   ];
 
   function init(containerId = 'map') {
+    containerEl = containerId;
     if (map) return;
-    map = L.map(containerId, { zoomControl: true });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap',
-      maxZoom: 19
-    }).addTo(map);
-    setView('land');
+    buildMap('land');
   }
 
   function setView(view) {
     currentView = view;
-    const v = VIEWS[view] || VIEWS.land;
-    if (map) map.setView(v.center, v.zoom);
+    buildMap(view);
+  }
+
+  function buildMap(view) {
+    if (map) { map.remove(); map = null; }
+    if (PARK_MAPS[view]) {
+      initImageMap(PARK_MAPS[view]);
+    } else {
+      initOSMMap(view);
+    }
     refreshMarkers();
+  }
+
+  function initImageMap(cfg) {
+    map = L.map(containerEl, {
+      crs: L.CRS.Simple,
+      zoomControl: true,
+      minZoom: -2,
+      maxZoom: 2,
+      attributionControl: false
+    });
+    const bounds = [[0, 0], [cfg.height, cfg.width]];
+    L.imageOverlay(cfg.image, bounds).addTo(map);
+    map.fitBounds(bounds);
+    map.setMaxBounds([
+      [-cfg.height * 0.1, -cfg.width * 0.1],
+      [cfg.height * 1.1, cfg.width * 1.1]
+    ]);
+  }
+
+  function initOSMMap(view) {
+    map = L.map(containerEl, { zoomControl: true });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap',
+      maxZoom: 19
+    }).addTo(map);
+    const v = VIEWS[view] || VIEWS.land;
+    map.setView(v.center, v.zoom);
   }
 
   function clearMarkers() {
@@ -50,6 +91,12 @@ const TripMap = (() => {
     if (level <= 2) return 'green';
     if (level === 3) return 'orange';
     return 'red';
+  }
+
+  // Convert image-fraction (mapX, mapY in 0..1) → Leaflet CRS.Simple latLng
+  function imageLatLng(cfg, mx, my) {
+    // CRS.Simple has y increasing upward; image top is at y=height
+    return [(1 - my) * cfg.height, mx * cfg.width];
   }
 
   function refreshMarkers() {
@@ -71,8 +118,17 @@ const TripMap = (() => {
       return;
     }
     const park = currentView;
+    const cfg = PARK_MAPS[park];
     const list = DataStore.attractions().filter(a => a.park === park && !a.closed);
     list.forEach(a => {
+      let latLng;
+      if (cfg && a.mapX != null && a.mapY != null) {
+        latLng = imageLatLng(cfg, a.mapX, a.mapY);
+      } else if (a.lat != null && a.lng != null) {
+        latLng = [a.lat, a.lng];
+      } else {
+        return;
+      }
       const isFav = favs.has(a.id);
       const cls = pinClass(a.fearLevel);
       const icon = L.divIcon({
@@ -81,7 +137,7 @@ const TripMap = (() => {
         iconSize: [32, 32],
         iconAnchor: [16, 16]
       });
-      const m = L.marker([a.lat, a.lng], { icon }).addTo(map);
+      const m = L.marker(latLng, { icon }).addTo(map);
       m.bindPopup(`
         <strong>${a.name}</strong><br>
         <small>${a.area} ・ 怖さ Lv${a.fearLevel}</small><br>
@@ -96,6 +152,10 @@ const TripMap = (() => {
       App.toast('位置情報を利用できません');
       return;
     }
+    if (PARK_MAPS[currentView]) {
+      App.toast('このマップは現在地表示に対応していません');
+      return;
+    }
     navigator.geolocation.getCurrentPosition(pos => {
       const ll = [pos.coords.latitude, pos.coords.longitude];
       if (userMarker) map.removeLayer(userMarker);
@@ -108,6 +168,11 @@ const TripMap = (() => {
   }
 
   function fitAll() {
+    if (PARK_MAPS[currentView]) {
+      const cfg = PARK_MAPS[currentView];
+      map.fitBounds([[0, 0], [cfg.height, cfg.width]]);
+      return;
+    }
     if (!markers.length) return;
     const group = L.featureGroup(markers);
     map.fitBounds(group.getBounds(), { padding: [40, 40] });

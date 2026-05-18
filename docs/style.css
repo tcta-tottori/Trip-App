@@ -1,13 +1,13 @@
 :root {
-  --ink: #1a1a2e;
-  --paper: #fdf8f3;
-  --gold: #c89b3c;
+  --ink: #11314a;
+  --paper: #eaf3f8;
+  --gold: #3a91b8;
   --rouge: #c0392b;
-  --navy: #1e3a5f;
+  --navy: #1d4d6b;
   --mint: #5a8d7d;
   --warn: #d9822b;
-  --muted: #6b6b75;
-  --line: #e6dfd4;
+  --muted: #6c7a8a;
+  --line: #c8dee7;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,8 +29,8 @@ h1, h2, h3 {
 }
 
 .cover {
-  background: linear-gradient(135deg, var(--navy) 0%, #2c5282 100%);
-  color: var(--paper);
+  background: linear-gradient(135deg, #0d3c5a 0%, #1d6b8a 50%, #3eaecf 100%);
+  color: #f5fcff;
   padding: 80px 24px 100px;
   position: relative;
   overflow: hidden;
@@ -39,7 +39,7 @@ h1, h2, h3 {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 80% 20%, rgba(200, 155, 60, 0.15), transparent 50%);
+  background: radial-gradient(circle at 80% 20%, rgba(180, 230, 245, 0.25), transparent 50%);
   pointer-events: none;
 }
 .cover-inner { max-width: 800px; margin: 0 auto; position: relative; }
@@ -61,12 +61,12 @@ h1, h2, h3 {
   color: var(--gold);
   margin-bottom: 12px;
 }
-.cover .meta { color: rgba(253, 248, 243, 0.8); font-size: 14px; }
+.cover .meta { color: rgba(245, 252, 255, 0.85); font-size: 14px; }
 
 .toc {
   position: sticky;
   top: 0;
-  background: rgba(253, 248, 243, 0.96);
+  background: rgba(234, 243, 248, 0.96);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
   padding: 12px 16px;
@@ -216,7 +216,7 @@ h1, h2, h3 {
   border: 2px solid var(--gold);
   border-radius: 50%;
 }
-.timeline li.hl::after { background: var(--gold); transform: scale(1.4); box-shadow: 0 0 0 4px rgba(200, 155, 60, 0.2); }
+.timeline li.hl::after { background: var(--gold); transform: scale(1.4); box-shadow: 0 0 0 4px rgba(58, 145, 184, 0.25); }
 .timeline li.hl strong { color: var(--rouge); }
 .timeline time {
   font-family: 'Shippori Mincho', serif;
