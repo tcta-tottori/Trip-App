@@ -349,6 +349,70 @@ h1, h2, h3 { font-family: 'Shippori Mincho', serif; letter-spacing: 0.02em; }
 .timeline .ev .loc { color: var(--muted); font-size: 12px; }
 .timeline li.done .ev { opacity: 0.55; text-decoration: line-through; }
 
+/* ---------- Itinerary editing ---------- */
+.edit-banner {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 8px; margin-bottom: 12px;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgba(125,211,232,0.18), rgba(94,184,212,0.22));
+  border: 1px solid var(--gold-bright);
+  border-radius: 10px;
+  color: var(--navy);
+  font-size: 13px;
+}
+[data-theme="dark"] .edit-banner { color: var(--gold-bright); }
+.edit-banner .link {
+  background: transparent; border: 0; padding: 4px 8px;
+  color: var(--rouge); font-family: inherit; font-size: 13px;
+  font-weight: 700; cursor: pointer; text-decoration: underline;
+}
+
+.timeline.editing .ev {
+  display: flex; align-items: center; gap: 8px;
+  padding-right: 6px;
+}
+.timeline .ev .ev-body { flex: 1; min-width: 0; }
+.timeline .drag-handle {
+  flex: 0 0 auto;
+  font-size: 18px; color: var(--muted);
+  cursor: grab; padding: 4px 2px;
+  touch-action: none;
+}
+.timeline .drag-handle:active { cursor: grabbing; }
+.timeline .ev-del {
+  flex: 0 0 auto;
+  background: transparent; border: 1px solid var(--line);
+  color: var(--rouge);
+  width: 28px; height: 28px; border-radius: 50%;
+  font-size: 13px; cursor: pointer;
+}
+.timeline .ev-del:hover { background: var(--rouge); color: white; border-color: var(--rouge); }
+.drag-ghost { opacity: 0.4; }
+
+.event-form {
+  display: flex; flex-direction: column; gap: 12px;
+  margin: 12px 0;
+}
+.event-form label {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 12px; color: var(--muted);
+}
+.event-form input[type="text"],
+.event-form input[type="time"],
+.event-form select,
+.event-form textarea {
+  padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--card); color: var(--ink);
+  font-family: inherit; font-size: 15px;
+}
+.event-form textarea { resize: vertical; min-height: 60px; }
+.event-form-row-check {
+  flex-direction: row !important;
+  align-items: center; gap: 8px !important;
+  font-size: 14px !important; color: var(--ink) !important;
+}
+.event-form-row-check input { width: 18px; height: 18px; }
+
 /* ---------- Attractions ---------- */
 .park-tabs {
   display: flex; padding: 8px 16px; gap: 8px; background: var(--paper);

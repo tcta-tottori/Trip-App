@@ -185,7 +185,15 @@ const App = (() => {
     document.addEventListener('click', e => {
       if (e.target.matches('[data-action="settings"]')) go('settings');
       if (e.target.matches('[data-close]')) closeModal();
+      if (e.target.matches('[data-action="toggle-itin-edit"]')) toggleItineraryEdit();
     });
+  }
+
+  // ---------- Itinerary edit ----------
+  let itineraryEditing = false;
+  function toggleItineraryEdit() {
+    itineraryEditing = !itineraryEditing;
+    renderItinerary();
   }
 
   // ---------- Home ----------
@@ -317,6 +325,12 @@ const App = (() => {
       b.addEventListener('click', () => { currentDayIdx = +b.dataset.day; renderItinerary(); });
     });
 
+    const editBtn = document.querySelector('[data-action="toggle-itin-edit"]');
+    if (editBtn) {
+      editBtn.textContent = itineraryEditing ? '✓' : '✏️';
+      editBtn.setAttribute('aria-label', itineraryEditing ? '編集を終了' : '編集');
+    }
+
     const day = days[currentDayIdx];
     const completed = new Set(Storage.get('completedEvents', []));
     const now = TripTimer.now();
@@ -329,33 +343,191 @@ const App = (() => {
       if (t > now) { nextEventTime = ev.time; break; }
     }
 
+    const editBanner = itineraryEditing
+      ? `<div class="edit-banner">
+           <span>✏️ 編集モード — タップで編集、長押しで並べ替え</span>
+           ${DataStore.isItineraryEdited() ? `<button class="link" data-action="reset-itin">初期化</button>` : ''}
+         </div>`
+      : '';
+
     root.innerHTML = `
       <h2 style="font-size:18px;margin-bottom:6px;">${formatDateJa(day.date)}</h2>
       <p class="muted" style="margin-bottom:14px;">${escape(day.title)}</p>
-      <ol class="timeline">
+      ${editBanner}
+      <ol class="timeline ${itineraryEditing ? 'editing' : ''}" id="itin-timeline">
         ${day.events.map((ev, idx) => {
           const evKey = day.date + '_' + ev.time + '_' + idx;
           const isDone = completed.has(evKey);
           const isNow = ev.time === nextEventTime;
           return `
-            <li class="${isDone ? 'done' : ''} ${ev.highlight ? 'hl' : ''} ${isNow ? 'now' : ''}">
+            <li class="${isDone ? 'done' : ''} ${ev.highlight ? 'hl' : ''} ${isNow ? 'now' : ''}" data-evidx="${idx}">
               <time>${ev.time}</time>
               <div class="ev" data-evkey="${evKey}" data-evidx="${idx}">
-                <strong>${ev.highlight ? '★ ' : ''}${escape(ev.title)}</strong>
-                ${ev.location ? `<div class="loc">📍 ${escape(ev.location)}</div>` : ''}
-                ${ev.description ? `<div class="loc">${escape(ev.description)}</div>` : ''}
+                ${itineraryEditing ? '<span class="drag-handle" aria-hidden="true">⠿</span>' : ''}
+                <div class="ev-body">
+                  <strong>${ev.highlight ? '★ ' : ''}${escape(ev.title)}</strong>
+                  ${ev.location ? `<div class="loc">📍 ${escape(ev.location)}</div>` : ''}
+                  ${ev.description ? `<div class="loc">${escape(ev.description)}</div>` : ''}
+                </div>
+                ${itineraryEditing ? `<button class="ev-del" data-del="${idx}" aria-label="削除">✕</button>` : ''}
               </div>
             </li>`;
         }).join('')}
       </ol>
+      ${itineraryEditing ? `<button class="btn outline" id="add-event" style="width:100%;margin-top:12px;">＋ イベントを追加</button>` : ''}
     `;
 
-    root.querySelectorAll('.ev').forEach(el => {
-      el.addEventListener('click', () => {
-        const idx = +el.dataset.evidx;
-        showEventDetail(day, idx, el.dataset.evkey);
+    if (itineraryEditing) {
+      root.querySelectorAll('.ev').forEach(el => {
+        el.addEventListener('click', e => {
+          if (e.target.closest('.ev-del') || e.target.closest('.drag-handle')) return;
+          const idx = +el.dataset.evidx;
+          showEventEditor(day, idx);
+        });
       });
+      root.querySelectorAll('.ev-del').forEach(b => {
+        b.addEventListener('click', e => {
+          e.stopPropagation();
+          const idx = +b.dataset.del;
+          if (!confirm(`「${day.events[idx].title}」を削除しますか？`)) return;
+          deleteEvent(currentDayIdx, idx);
+        });
+      });
+      const addBtn = document.getElementById('add-event');
+      if (addBtn) addBtn.addEventListener('click', () => showEventEditor(day, -1));
+      const resetBtn = root.querySelector('[data-action="reset-itin"]');
+      if (resetBtn) resetBtn.addEventListener('click', () => {
+        if (confirm('編集内容を破棄して初期状態に戻しますか？')) {
+          DataStore.resetItinerary();
+          renderItinerary();
+          toast('初期状態に戻しました');
+        }
+      });
+      enableDragSort();
+    } else {
+      root.querySelectorAll('.ev').forEach(el => {
+        el.addEventListener('click', () => {
+          const idx = +el.dataset.evidx;
+          showEventDetail(day, idx, el.dataset.evkey);
+        });
+      });
+    }
+  }
+
+  function enableDragSort() {
+    if (typeof Sortable === 'undefined') return;
+    const list = document.getElementById('itin-timeline');
+    if (!list) return;
+    Sortable.create(list, {
+      animation: 150,
+      handle: '.drag-handle',
+      ghostClass: 'drag-ghost',
+      onEnd: (evt) => {
+        if (evt.oldIndex === evt.newIndex) return;
+        const itin = JSON.parse(JSON.stringify(DataStore.itinerary()));
+        const events = itin.days[currentDayIdx].events;
+        const [moved] = events.splice(evt.oldIndex, 1);
+        events.splice(evt.newIndex, 0, moved);
+        DataStore.setItinerary(itin);
+        renderItinerary();
+      }
     });
+  }
+
+  function deleteEvent(dayIdx, evIdx) {
+    const itin = JSON.parse(JSON.stringify(DataStore.itinerary()));
+    itin.days[dayIdx].events.splice(evIdx, 1);
+    DataStore.setItinerary(itin);
+    renderItinerary();
+    toast('削除しました');
+  }
+
+  function showEventEditor(day, idx) {
+    const isNew = idx < 0;
+    const ev = isNew
+      ? { time: '12:00', title: '', type: 'park', location: '', description: '', highlight: false }
+      : day.events[idx];
+    const typeOpts = [
+      ['park', '🎢 パーク'], ['meal', '🍴 食事'], ['hotel', '🏨 宿泊'],
+      ['flight', '✈️ フライト'], ['transit', '🚃 移動'],
+      ['shopping', '🛍️ 買物'], ['note', '📝 メモ']
+    ];
+    openModal(`
+      <h2>${isNew ? 'イベントを追加' : 'イベントを編集'}</h2>
+      <div class="event-form">
+        <label>
+          <span>時刻</span>
+          <input type="time" id="ev-time" value="${escape(ev.time || '12:00')}">
+        </label>
+        <label>
+          <span>タイトル</span>
+          <input type="text" id="ev-title" value="${escape(ev.title || '')}" placeholder="例: ランチ">
+        </label>
+        <label>
+          <span>場所</span>
+          <input type="text" id="ev-loc" value="${escape(ev.location || '')}" placeholder="例: クイーン・オブ・ハート">
+        </label>
+        <label>
+          <span>種別</span>
+          <select id="ev-type">
+            ${typeOpts.map(([v, l]) => `<option value="${v}" ${ev.type === v ? 'selected' : ''}>${l}</option>`).join('')}
+          </select>
+        </label>
+        <label>
+          <span>メモ</span>
+          <textarea id="ev-desc" rows="3" placeholder="任意">${escape(ev.description || '')}</textarea>
+        </label>
+        <label class="event-form-row-check">
+          <input type="checkbox" id="ev-hl" ${ev.highlight ? 'checked' : ''}>
+          <span>★ ハイライト（特に重要な予定）</span>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn gold" id="ev-save">${isNew ? '追加' : '保存'}</button>
+        <button class="btn outline" data-close>キャンセル</button>
+        ${!isNew ? `<button class="btn danger" id="ev-delete">削除</button>` : ''}
+      </div>
+    `);
+    document.getElementById('ev-save').addEventListener('click', () => {
+      const next = {
+        time: document.getElementById('ev-time').value || '00:00',
+        title: document.getElementById('ev-title').value.trim() || '無題',
+        type: document.getElementById('ev-type').value,
+        location: document.getElementById('ev-loc').value.trim(),
+        description: document.getElementById('ev-desc').value.trim(),
+        highlight: document.getElementById('ev-hl').checked
+      };
+      if (!next.location) delete next.location;
+      if (!next.description) delete next.description;
+      if (!next.highlight) delete next.highlight;
+      saveEvent(currentDayIdx, idx, next);
+      closeModal();
+      renderItinerary();
+      toast(isNew ? '追加しました' : '保存しました');
+    });
+    const delBtn = document.getElementById('ev-delete');
+    if (delBtn) {
+      delBtn.addEventListener('click', () => {
+        if (!confirm(`「${ev.title}」を削除しますか？`)) return;
+        deleteEvent(currentDayIdx, idx);
+        closeModal();
+      });
+    }
+  }
+
+  function saveEvent(dayIdx, evIdx, payload) {
+    const itin = JSON.parse(JSON.stringify(DataStore.itinerary()));
+    const events = itin.days[dayIdx].events;
+    if (evIdx < 0) {
+      // New event: insert at the chronological position by time
+      let insertAt = events.findIndex(e => (e.time || '') > (payload.time || ''));
+      if (insertAt < 0) insertAt = events.length;
+      events.splice(insertAt, 0, payload);
+    } else {
+      // Edit in place — preserves any drag-defined order
+      events[evIdx] = payload;
+    }
+    DataStore.setItinerary(itin);
   }
 
   function showEventDetail(day, idx, evKey) {

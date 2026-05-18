@@ -32,7 +32,10 @@
 
   <!-- Itinerary -->
   <section class="screen" id="screen-itinerary" data-screen="itinerary" hidden>
-    <header class="topbar"><h1>📅 旅程</h1></header>
+    <header class="topbar">
+      <h1>📅 旅程</h1>
+      <button class="icon-btn" data-action="toggle-itin-edit" aria-label="編集">✏️</button>
+    </header>
     <div class="day-tabs" id="day-tabs"></div>
     <div class="content" id="itinerary-content"></div>
   </section>
@@ -126,6 +129,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script src="js/data.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/timer.js"></script>

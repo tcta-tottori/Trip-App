@@ -435,9 +435,19 @@ def main() -> int:
         "",
     ]
 
-    ok = miss = 0
+    # Skip files that have been updated more recently than this script run
+    # (e.g. by fetch_official_images.py running first). Detect by checking
+    # for an env flag set by the workflow.
+    import os
+    skip_existing = os.environ.get("SKIP_EXISTING") == "1"
+
+    ok = miss = skipped = 0
     for titles, fname, label in TARGETS_LAND + TARGETS_SEA:
-        if fetch(titles, ATTR_DIR / fname, label, credits):
+        target = ATTR_DIR / fname
+        if skip_existing and target.exists():
+            skipped += 1
+            continue
+        if fetch(titles, target, label, credits):
             ok += 1
         else:
             miss += 1
@@ -453,7 +463,10 @@ def main() -> int:
             miss += 1
 
     CRED.write_text("\n".join(credits) + "\n", encoding="utf-8")
-    print(f"\nDone. {ok} ok / {miss} missing. Missing images keep their placeholders.")
+    if skip_existing:
+        print(f"\nDone. {ok} ok / {miss} missing / {skipped} kept (existing).")
+    else:
+        print(f"\nDone. {ok} ok / {miss} missing. Missing images keep their placeholders.")
     # Always exit 0 so the CI's follow-up steps (URL fetch, commit) still run
     # even if every Wikipedia request failed.
     return 0

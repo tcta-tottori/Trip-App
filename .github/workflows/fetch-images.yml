@@ -6,7 +6,11 @@ on:
       branch:
         description: "Commit images and URLs to this branch"
         required: false
-        default: "claude/mobile-shareable-url-1gj8c"
+        default: "claude/new-session-BlJ72"
+      source:
+        description: "Image source: official (OGP), wikipedia, or both"
+        required: false
+        default: "both"
 
 permissions:
   contents: write
@@ -28,11 +32,20 @@ jobs:
       - name: Install Pillow
         run: pip install --quiet Pillow
 
-      - name: Fetch images
-        run: python3 scripts/fetch_images.py
-
       - name: Fetch official URLs
         run: python3 scripts/fetch_official_urls.py
+
+      - name: Fetch official OGP images
+        if: ${{ github.event.inputs.source != 'wikipedia' }}
+        run: python3 scripts/fetch_official_images.py
+
+      - name: Fetch Wikipedia images (fallback / fill missing)
+        if: ${{ github.event.inputs.source != 'official' }}
+        env:
+          # When running after the OGP fetcher, keep its results in place
+          # and only fill in attractions that still have no image.
+          SKIP_EXISTING: ${{ github.event.inputs.source == 'wikipedia' && '0' || '1' }}
+        run: python3 scripts/fetch_images.py
 
       - name: Commit and push if changed
         run: |

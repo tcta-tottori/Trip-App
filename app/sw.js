@@ -1,5 +1,5 @@
 // Service Worker for offline support
-const CACHE_NAME = 'disney2026-v7';
+const CACHE_NAME = 'disney2026-v8';
 const ASSETS = [
   './',
   './index.html',
@@ -18,9 +18,10 @@ const ASSETS = [
   '../data/itinerary.json',
   '../data/checklist.json',
   '../images/parks/tdl-map.jpg',
-  // Leaflet (CDN — best-effort cache)
+  // Leaflet + Sortable (CDN — best-effort cache)
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+  'https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js'
 ];
 
 self.addEventListener('install', event => {
