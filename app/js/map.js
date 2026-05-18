@@ -19,6 +19,11 @@ const TripMap = (() => {
       image: '../images/parks/tdl-map.jpg',
       width: 1400,
       height: 1224
+    },
+    sea: {
+      image: '../images/parks/tds-map.jpg',
+      width: 1600,
+      height: 1131
     }
   };
 

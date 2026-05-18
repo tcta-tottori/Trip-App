@@ -48,9 +48,11 @@
         },
         {
           "time": "10:30",
-          "title": "プーさんのハニーハント",
+          "title": "ベイマックスのハッピーライド",
           "type": "park",
-          "description": "朝イチで人気アトラクション"
+          "location": "トゥモローランド",
+          "highlight": true,
+          "description": "今回ぜひ乗りたいアトラクション"
         },
         {
           "time": "11:30",
@@ -59,8 +61,11 @@
         },
         {
           "time": "13:00",
-          "title": "美女と野獣 \"魔法のものがたり\"",
-          "type": "park"
+          "title": "蒸気船マークトウェイン号",
+          "type": "park",
+          "location": "ウエスタンランド",
+          "highlight": true,
+          "description": "アメリカ河を一周。揺れも少なく休憩にも◎"
         },
         {
           "time": "14:30",

@@ -1,5 +1,5 @@
 // Service Worker for offline support
-const CACHE_NAME = 'disney2026-v8';
+const CACHE_NAME = 'disney2026-v9';
 const ASSETS = [
   './',
   './index.html',
@@ -18,6 +18,7 @@ const ASSETS = [
   '../data/itinerary.json',
   '../data/checklist.json',
   '../images/parks/tdl-map.jpg',
+  '../images/parks/tds-map.jpg',
   // Leaflet + Sortable (CDN — best-effort cache)
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
