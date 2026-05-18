@@ -1,7 +1,7 @@
 // Main app
 const App = (() => {
   // Updated at each commit; surfaces on the 設定 → アプリ情報 row
-  const BUILD_TIME = '2026-05-18 21:30';
+  const BUILD_TIME = '2026-05-18 23:00';
   const SCREENS = ['home', 'itinerary', 'attractions', 'map', 'checklist', 'emergency', 'memos', 'settings'];
   let currentScreen = 'home';
   let currentDayIdx = 0;
@@ -190,6 +190,109 @@ const App = (() => {
       if (e.target.matches('[data-action="settings"]')) go('settings');
       if (e.target.matches('[data-close]')) closeModal();
       if (e.target.matches('[data-action="toggle-itin-edit"]')) toggleItineraryEdit();
+      if (e.target.matches('[data-action="export-itin-image"]')) showJourneyImageExporter();
+    });
+  }
+
+  // ---------- Journey image export ----------
+  function showJourneyImageExporter() {
+    const days = DataStore.itinerary().days;
+    if (!days.length) { toast('予定がありません'); return; }
+    const idx = Math.min(Math.max(0, currentDayIdx), days.length - 1);
+    const day = days[idx];
+
+    openModal(`
+      <h2>📷 旅程を画像で出力</h2>
+      <p class="muted" style="margin-bottom:12px;font-size:13px;">
+        旅程をきれいなタイムライン画像（PNG）として書き出します。SNS や家族への共有に。
+      </p>
+      <div class="ji-options">
+        <label class="ji-option">
+          <input type="radio" name="ji-scope" value="day" checked>
+          <span>
+            <strong>Day ${day.dayNumber}（選択中）</strong>
+            <small>${escape(day.title || '')}・${formatDateJa(day.date)}</small>
+          </span>
+        </label>
+        <label class="ji-option">
+          <input type="radio" name="ji-scope" value="all">
+          <span>
+            <strong>全日程</strong>
+            <small>Day 1〜${days[days.length - 1].dayNumber}（縦長の1枚画像）</small>
+          </span>
+        </label>
+      </div>
+      <div class="ji-preview" id="ji-preview" hidden>
+        <div class="ji-preview-frame"><canvas id="ji-canvas"></canvas></div>
+        <p class="muted" style="font-size:12px;text-align:center;margin-top:6px;">プレビュー（実際の画像は高解像度で保存されます）</p>
+      </div>
+      <div class="modal-actions" id="ji-actions">
+        <button class="btn gold" id="ji-generate">画像を生成</button>
+        <button class="btn outline" data-close>閉じる</button>
+      </div>
+    `);
+
+    document.getElementById('ji-generate').addEventListener('click', () => {
+      const scope = document.querySelector('input[name="ji-scope"]:checked').value;
+      generateJourneyImage(scope === 'all' ? days : [day]);
+    });
+  }
+
+  function generateJourneyImage(days) {
+    const trip = DataStore.itinerary().trip || {};
+    const title = trip.title || 'ディズニー旅行 2026';
+    const subtitle = days.length === 1
+      ? `Day ${days[0].dayNumber}・${days[0].title || ''}`
+      : `${formatDateJa(days[0].date)} 〜 ${formatDateJa(days[days.length - 1].date)}（全${days.length}日）`;
+
+    let canvas;
+    try {
+      canvas = JourneyImage.render(days, { title, subtitle });
+    } catch (err) {
+      console.error('Journey image render failed', err);
+      toast('画像の生成に失敗しました');
+      return;
+    }
+
+    // Show preview inside the modal (downscaled into a fixed-width frame).
+    const preview = document.getElementById('ji-preview');
+    const previewCanvas = document.getElementById('ji-canvas');
+    if (preview && previewCanvas) {
+      const maxW = 320;
+      const scale = Math.min(1, maxW / (canvas.width / 2)); // canvas is 2x DPR
+      previewCanvas.style.width = (canvas.width / 2 * scale) + 'px';
+      previewCanvas.style.height = (canvas.height / 2 * scale) + 'px';
+      previewCanvas.width = canvas.width;
+      previewCanvas.height = canvas.height;
+      previewCanvas.getContext('2d').drawImage(canvas, 0, 0);
+      preview.hidden = false;
+    }
+
+    const filename = days.length === 1
+      ? `disney2026-day${days[0].dayNumber}.png`
+      : 'disney2026-itinerary.png';
+
+    const actions = document.getElementById('ji-actions');
+    actions.innerHTML = `
+      <button class="btn gold" id="ji-download">📥 ダウンロード</button>
+      ${JourneyImage.canShareFiles() ? `<button class="btn" id="ji-share">📤 共有</button>` : ''}
+      <button class="btn outline" id="ji-back">↺ やり直し</button>
+      <button class="btn outline" data-close>閉じる</button>
+    `;
+    document.getElementById('ji-download').addEventListener('click', async () => {
+      const ok = await JourneyImage.download(canvas, filename);
+      toast(ok ? '画像を保存しました' : '保存に失敗しました');
+    });
+    const shareBtn = document.getElementById('ji-share');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', async () => {
+        const ok = await JourneyImage.share(canvas, filename, '旅程');
+        if (!ok) toast('共有がキャンセルされました');
+      });
+    }
+    document.getElementById('ji-back').addEventListener('click', () => {
+      closeModal();
+      showJourneyImageExporter();
     });
   }
 
@@ -1165,7 +1268,7 @@ const App = (() => {
 
       <div class="setting-section">
         <h3>アプリ情報</h3>
-        <div class="setting-row"><div><div class="label">バージョン</div></div><div class="desc">1.3.0</div></div>
+        <div class="setting-row"><div><div class="label">バージョン</div></div><div class="desc">1.4.0</div></div>
         <div class="setting-row"><div><div class="label">最終更新</div></div><div class="desc">${BUILD_TIME}</div></div>
         <div class="setting-row">
           <div><div class="label">🔄 キャッシュを破棄して再読込</div><div class="desc">最新のアプリを取得し直す</div></div>
