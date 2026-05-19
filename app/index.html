@@ -34,7 +34,10 @@
   <section class="screen" id="screen-itinerary" data-screen="itinerary" hidden>
     <header class="topbar">
       <h1>📅 旅程</h1>
-      <button class="icon-btn" data-action="toggle-itin-edit" aria-label="編集">✏️</button>
+      <div class="topbar-actions">
+        <button class="icon-btn" data-action="export-itin-image" aria-label="画像で出力">📷</button>
+        <button class="icon-btn" data-action="toggle-itin-edit" aria-label="編集">✏️</button>
+      </div>
     </header>
     <div class="day-tabs" id="day-tabs"></div>
     <div class="content" id="itinerary-content"></div>
@@ -150,6 +153,7 @@
 <script src="js/map.js"></script>
 <script src="js/notify.js"></script>
 <script src="js/weather.js"></script>
+<script src="js/journey-image.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
